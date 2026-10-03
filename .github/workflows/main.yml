@@ -1,0 +1,25 @@
+name: Compilar APK
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+
+      - name: Convertir HTML a APK
+        uses: Android-Actions/web-to-apk@v1
+        with:
+          web-dir: '.'
+          app-name: 'MiAplicacion'
+
+      - name: Guardar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mi-Aplicacion-APK
+          path: '**/*.apk'
