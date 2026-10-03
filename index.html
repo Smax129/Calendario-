@@ -1,382 +1,2633 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendario Laboral</title>
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#0f172a,#1e1b4b);color:#f1f5f9;padding:20px}
-        .container{max-width:1200px;margin:0 auto}
-        header{text-align:center;margin-bottom:30px;padding:20px;background:rgba(30,41,59,0.9);border-radius:20px}
-        h1{color:#6366f1;margin-bottom:10px}
-        .dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:30px}
-        .card{background:rgba(30,41,59,0.9);border-radius:16px;padding:20px;border:1px solid rgba(255,255,255,0.1)}
-        .card-title{font-size:0.85rem;color:#94a3b8;margin-bottom:8px}
-        .card-value{font-size:2rem;font-weight:bold;color:#10b981}
-        .section{background:rgba(30,41,59,0.7);border-radius:20px;padding:25px;margin-bottom:30px}
-        .section-title{font-size:1.2rem;margin-bottom:20px;color:#6366f1}
-        .tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
-        .tab{padding:10px 20px;background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.1);border-radius:10px;cursor:pointer}
-        .tab.active{background:#6366f1;color:white}
-        .tab-content{display:none}
-        .tab-content.active{display:block}
-        .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin-bottom:20px}
-        label{display:block;margin-bottom:5px;color:#94a3b8;font-size:0.9rem}
-        input,select{width:100%;padding:10px;background:rgba(15,23,42,0.8);border:1px solid rgba(255,255,255,0.12);color:#f1f5f9;border-radius:8px}
-        .btn{background:#6366f1;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:bold}
-        .btn:hover{background:#4f46e5}
-        .btn-danger{background:#ef4444}
-        .calendar-container{background:rgba(15,23,42,0.6);border-radius:16px;padding:20px}
-        .calendar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
-        .calendar-nav button{background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.3);color:#6366f1;padding:8px 14px;border-radius:8px;cursor:pointer}
-        .calendar-month{font-size:1.2rem;font-weight:bold;color:#6366f1}
-        .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
-        .calendar-day-header{text-align:center;padding:10px;font-weight:bold;color:#94a3b8;font-size:0.85rem}
-        .calendar-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:10px;cursor:pointer;background:rgba(30,41,59,0.5);border:1px solid rgba(255,255,255,0.05);transition:all 0.3s;min-height:60px}
-        .calendar-day:hover{transform:scale(1.05);border-color:#6366f1}
-        .calendar-day.today{border:2px solid #6366f1}
-        .calendar-day.vacation{background:rgba(16,185,129,0.2);border-color:rgba(16,185,129,0.3)}
-        .calendar-day.holiday{background:rgba(99,102,241,0.2);border-color:rgba(99,102,241,0.3)}
-        .calendar-day.work{background:rgba(245,158,11,0.2);border-color:rgba(245,158,11,0.3)}
-        .calendar-day-number{font-size:0.95rem;font-weight:bold}
-        .modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:3000;align-items:center;justify-content:center;padding:20px}
-        .modal.show{display:flex}
-        .modal-content{background:#1e293b;border-radius:20px;padding:30px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto}
-        .modal-header{display:flex;justify-content:space-between;margin-bottom:20px}
-        .modal-close{background:none;border:none;color:#94a3b8;font-size:2rem;cursor:pointer}
-        .fab{position:fixed;bottom:20px;right:20px;width:56px;height:56px;border-radius:50%;background:#6366f1;color:white;border:none;font-size:1.8rem;cursor:pointer;box-shadow:0 4px 15px rgba(99,102,241,0.4)}
-        .table-container{overflow-x:auto;margin-top:15px}
-        table{width:100%;border-collapse:collapse}
-        th,td{padding:10px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.08);font-size:0.9rem}
-        th{background:rgba(15,23,42,0.8);color:#94a3b8}
-        .tag{padding:4px 10px;border-radius:12px;font-size:0.7rem}
-        .tag-vacation{background:rgba(16,185,129,0.2);color:#10b981}
-        .tag-holiday{background:rgba(99,102,241,0.2);color:#6366f1}
-        .tag-work{background:rgba(245,158,11,0.2);color:#f59e0b}
-        .holiday-item{background:rgba(15,23,42,0.6);padding:15px;border-radius:10px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
-        .checkbox-item{display:flex;align-items:center;gap:10px;padding:10px;background:rgba(15,23,42,0.5);border-radius:8px;margin-bottom:8px}
-        input[type="checkbox"]{width:18px;height:18px}
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#2563eb">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Mi Jornada</title>
+
+<style>
+:root{
+  --primary:#2563eb;
+  --primary2:#60a5fa;
+  --bg:#f4f7fb;
+  --card:#ffffff;
+  --text:#172033;
+  --muted:#718096;
+  --border:#e4e9f1;
+  --success:#16a34a;
+  --danger:#dc2626;
+  --warning:#f59e0b;
+  --shadow:0 8px 30px rgba(20,35,70,.08);
+  --radius:22px;
+}
+
+*{box-sizing:border-box}
+
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  min-height:100%;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overscroll-behavior:none;
+}
+
+body{
+  -webkit-tap-highlight-color:transparent;
+}
+
+button,input,select,textarea{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+  border:0;
+}
+
+.app{
+  min-height:100vh;
+  display:flex;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+  width:260px;
+  min-height:100vh;
+  background:var(--card);
+  border-right:1px solid var(--border);
+  padding:22px 16px;
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  z-index:20;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:8px;
+  margin-bottom:28px;
+}
+
+.logo-icon{
+  width:48px;
+  height:48px;
+  border-radius:15px;
+  background:linear-gradient(135deg,var(--primary2),var(--primary));
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  box-shadow:0 8px 20px rgba(37,99,235,.25);
+}
+
+.logo strong{
+  display:block;
+  font-size:17px;
+}
+
+.logo small{
+  color:var(--muted);
+}
+
+.nav{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.nav button{
+  width:100%;
+  padding:13px 14px;
+  border-radius:14px;
+  background:transparent;
+  color:var(--muted);
+  text-align:left;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  transition:.2s;
+}
+
+.nav button:hover,
+.nav button.active{
+  background:rgba(37,99,235,.10);
+  color:var(--primary);
+}
+
+.nav-icon{
+  width:22px;
+  text-align:center;
+  font-size:18px;
+}
+
+/* MAIN */
+
+.main{
+  width:calc(100% - 260px);
+  margin-left:260px;
+  min-height:100vh;
+}
+
+.topbar{
+  height:72px;
+  padding:0 28px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:var(--bg);
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.page-title{
+  font-size:25px;
+  font-weight:800;
+}
+
+.date-label{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.container{
+  max-width:1500px;
+  margin:auto;
+  padding:10px 28px 40px;
+}
+
+.page{
+  display:none;
+}
+
+.page.active{
+  display:block;
+}
+
+/* CARDS */
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+  margin-bottom:22px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+
+.metric{
+  padding:20px;
+  position:relative;
+  overflow:hidden;
+}
+
+.metric-icon{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(37,99,235,.10);
+  color:var(--primary);
+  font-size:21px;
+  margin-bottom:16px;
+}
+
+.metric h3{
+  margin:0;
+  font-size:28px;
+}
+
+.metric p{
+  margin:5px 0 0;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.metric small{
+  display:block;
+  margin-top:12px;
+  color:var(--muted);
+}
+
+/* GRID */
+
+.grid2{
+  display:grid;
+  grid-template-columns:1.4fr 1fr;
+  gap:20px;
+}
+
+.panel{
+  padding:20px;
+  margin-bottom:20px;
+}
+
+.panel-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:18px;
+}
+
+.panel-title{
+  font-size:18px;
+  font-weight:800;
+}
+
+.panel-sub{
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* BUTTONS */
+
+.btn{
+  padding:11px 15px;
+  border-radius:13px;
+  font-weight:700;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  transition:.2s;
+}
+
+.btn-primary{
+  background:linear-gradient(135deg,var(--primary2),var(--primary));
+  color:#fff;
+  box-shadow:0 8px 18px rgba(37,99,235,.20);
+}
+
+.btn-secondary{
+  background:var(--bg);
+  color:var(--text);
+  border:1px solid var(--border);
+}
+
+.btn-danger{
+  background:#fee2e2;
+  color:#b91c1c;
+}
+
+.btn:hover{
+  transform:translateY(-1px);
+}
+
+/* QUICK ACTIONS */
+
+.quick{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+.quick button{
+  padding:16px;
+  border-radius:16px;
+  background:var(--bg);
+  border:1px solid var(--border);
+  text-align:left;
+  color:var(--text);
+}
+
+.quick strong{
+  display:block;
+  margin-bottom:4px;
+}
+
+.quick span{
+  color:var(--muted);
+  font-size:12px;
+}
+
+/* CALENDAR */
+
+.calendar-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px;
+}
+
+.calendar-actions{
+  display:flex;
+  gap:6px;
+}
+
+.icon-btn{
+  width:36px;
+  height:36px;
+  border-radius:11px;
+  background:var(--bg);
+  color:var(--text);
+  border:1px solid var(--border);
+}
+
+.calendar-title{
+  font-weight:800;
+  text-transform:capitalize;
+}
+
+.weekdays,
+.calendar{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+}
+
+.weekdays div{
+  text-align:center;
+  color:var(--muted);
+  font-size:11px;
+  padding:6px 0;
+  font-weight:700;
+}
+
+.day{
+  min-height:72px;
+  padding:6px;
+  border:1px solid var(--border);
+  background:var(--card);
+  position:relative;
+  cursor:pointer;
+}
+
+.day:hover{
+  background:rgba(37,99,235,.05);
+}
+
+.day-number{
+  font-size:12px;
+  font-weight:700;
+}
+
+.day.other{
+  opacity:.35;
+}
+
+.day.today{
+  outline:2px solid var(--primary);
+  outline-offset:-2px;
+}
+
+.day.vacation{
+  background:#dbeafe;
+  color:#1d4ed8;
+}
+
+.day.free{
+  background:#dcfce7;
+  color:#15803d;
+}
+
+.day.convenio{
+  background:#fef3c7;
+  color:#a16207;
+}
+
+.day.holiday{
+  background:#fee2e2;
+  color:#b91c1c;
+}
+
+.day.weekend{
+  background:rgba(120,130,150,.07);
+}
+
+.day-note{
+  font-size:9px;
+  margin-top:7px;
+  overflow:hidden;
+  white-space:nowrap;
+}
+
+/* MOVEMENTS */
+
+.movement{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:13px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.movement:last-child{
+  border-bottom:0;
+}
+
+.move-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.move-icon{
+  width:40px;
+  height:40px;
+  border-radius:13px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.move-info strong{
+  display:block;
+  font-size:14px;
+}
+
+.move-info span{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  margin-top:3px;
+}
+
+.amount-positive{
+  color:var(--success);
+  font-weight:800;
+}
+
+.amount-negative{
+  color:var(--danger);
+  font-weight:800;
+}
+
+/* FORMS */
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.field.full{
+  grid-column:1/-1;
+}
+
+.field label{
+  font-size:13px;
+  font-weight:700;
+}
+
+.field input,
+.field select,
+.field textarea{
+  width:100%;
+  padding:12px 13px;
+  border:1px solid var(--border);
+  border-radius:13px;
+  background:var(--card);
+  color:var(--text);
+  outline:none;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(37,99,235,.10);
+}
+
+/* TABLE */
+
+.table-wrap{
+  overflow:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:650px;
+}
+
+th,td{
+  padding:13px 10px;
+  border-bottom:1px solid var(--border);
+  text-align:left;
+  font-size:13px;
+}
+
+th{
+  color:var(--muted);
+  font-size:11px;
+  text-transform:uppercase;
+}
+
+/* STATS */
+
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+
+.stat-box{
+  padding:20px;
+}
+
+.progress{
+  height:9px;
+  border-radius:10px;
+  background:var(--bg);
+  overflow:hidden;
+  margin-top:12px;
+}
+
+.progress-bar{
+  height:100%;
+  border-radius:10px;
+  background:linear-gradient(90deg,var(--primary2),var(--primary));
+}
+
+/* MODAL */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(10,20,40,.55);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:100;
+  backdrop-filter:blur(5px);
+}
+
+.modal.show{
+  display:flex;
+}
+
+.modal-box{
+  width:min(520px,100%);
+  max-height:90vh;
+  overflow:auto;
+  background:var(--card);
+  border-radius:25px;
+  padding:23px;
+  box-shadow:0 30px 80px rgba(0,0,0,.25);
+}
+
+.modal-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.modal-head h2{
+  margin:0;
+}
+
+/* TOAST */
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:90px;
+  transform:translate(-50%,20px);
+  background:#172033;
+  color:#fff;
+  padding:13px 18px;
+  border-radius:14px;
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  z-index:300;
+  max-width:90%;
+  text-align:center;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translate(-50%,0);
+}
+
+/* MOBILE NAV */
+
+.mobile-nav{
+  display:none;
+}
+
+/* DARK */
+
+body.dark{
+  --bg:#0c1220;
+  --card:#131b2d;
+  --text:#edf3ff;
+  --muted:#9aa7bd;
+  --border:#253148;
+  --shadow:0 8px 30px rgba(0,0,0,.25);
+}
+
+body.dark .btn-secondary{
+  background:#1a2437;
+}
+
+body.dark .day.weekend{
+  background:rgba(255,255,255,.03);
+}
+
+/* THEMES */
+
+body.theme-green{
+  --primary:#16a34a;
+  --primary2:#4ade80;
+}
+
+body.theme-purple{
+  --primary:#7c3aed;
+  --primary2:#a78bfa;
+}
+
+body.theme-orange{
+  --primary:#ea580c;
+  --primary2:#fb923c;
+}
+
+body.theme-teal{
+  --primary:#0f766e;
+  --primary2:#2dd4bf;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1150px){
+  .cards{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .grid2{
+    grid-template-columns:1fr;
+  }
+
+  .stats-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:800px){
+  .sidebar{
+    width:74px;
+    padding:15px 10px;
+  }
+
+  .logo{
+    justify-content:center;
+  }
+
+  .logo-text,
+  .nav-text{
+    display:none;
+  }
+
+  .nav button{
+    justify-content:center;
+    padding:14px 8px;
+  }
+
+  .main{
+    width:calc(100% - 74px);
+    margin-left:74px;
+  }
+
+  .topbar{
+    padding:0 18px;
+  }
+
+  .container{
+    padding:8px 18px 30px;
+  }
+}
+
+@media(max-width:650px){
+  .sidebar{
+    display:none;
+  }
+
+  .main{
+    width:100%;
+    margin-left:0;
+    padding-bottom:75px;
+  }
+
+  .topbar{
+    height:65px;
+    padding:0 15px;
+  }
+
+  .page-title{
+    font-size:21px;
+  }
+
+  .cards{
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+
+  .metric{
+    padding:15px;
+  }
+
+  .metric h3{
+    font-size:23px;
+  }
+
+  .metric-icon{
+    width:38px;
+    height:38px;
+    margin-bottom:10px;
+  }
+
+  .container{
+    padding:5px 12px 25px;
+  }
+
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .stats-grid{
+    grid-template-columns:1fr;
+  }
+
+  .quick{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .panel{
+    padding:15px;
+    border-radius:18px;
+  }
+
+  .day{
+    min-height:57px;
+    padding:5px;
+  }
+
+  .day-note{
+    display:none;
+  }
+
+  .mobile-nav{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    height:70px;
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    background:var(--card);
+    border-top:1px solid var(--border);
+    z-index:50;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+
+  .mobile-nav button{
+    background:none;
+    color:var(--muted);
+    font-size:10px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+  }
+
+  .mobile-nav button.active{
+    color:var(--primary);
+  }
+
+  .mobile-nav span:first-child{
+    font-size:19px;
+  }
+}
+
+@media(min-width:1000px) and (max-width:1400px){
+  .main{
+    width:calc(100% - 78px);
+    margin-left:78px;
+  }
+
+  .sidebar{
+    width:78px;
+  }
+
+  .logo-text,
+  .nav-text{
+    display:none;
+  }
+
+  .logo{
+    justify-content:center;
+  }
+
+  .nav button{
+    justify-content:center;
+  }
+}
+
+/* Z FOLD / LARGE TABLET */
+@media(min-width:1400px){
+  .container{
+    max-width:1700px;
+  }
+
+  .cards{
+    grid-template-columns:repeat(4,1fr);
+  }
+
+  .panel{
+    border-radius:25px;
+  }
+}
+</style>
 </head>
+
 <body>
-    <div class="container">
-        <header>
-            <h1>📅 Mi Calendario Laboral</h1>
-            <p>Control profesional con calendario visual</p>
-        </header>
 
-        <div class="dashboard">
-            <div class="card">
-                <div class="card-title">Horas Convenio</div>
-                <div class="card-value" id="horasConvenio">0</div>
-                <div style="color:#94a3b8;font-size:0.85rem">horas restantes</div>
-            </div>
-            <div class="card">
-                <div class="card-title">Días Vacaciones</div>
-                <div class="card-value" id="diasVacaciones" style="color:#10b981">0</div>
-                <div style="color:#94a3b8;font-size:0.85rem">días restantes</div>
-            </div>
-            <div class="card">
-                <div class="card-title">Próximo Festivo</div>
-                <div class="card-value" id="proximoFestivo" style="font-size:1.3rem;color:#06b6d4">-</div>
-                <div id="diasParaFestivo" style="color:#94a3b8;font-size:0.85rem">-</div>
-            </div>
-        </div>
+<div class="app">
 
-        <div class="section">
-            <h2 class="section-title">📅 Calendario</h2>
-            <div class="calendar-container">
-                <div class="calendar-header">
-                    <div class="calendar-nav">
-                        <button onclick="cambiarMes(-1)">◀ Ant</button>
-                        <span class="calendar-month" id="calendarMonth"></span>
-                        <button onclick="cambiarMes(1)">Sig ▶</button>
-                    </div>
-                    <button class="btn" onclick="abrirModal()">➕ Nuevo Registro</button>
-                </div>
-                <div class="calendar-grid" id="calendarGrid"></div>
-            </div>
-        </div>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">📅</div>
+    <div class="logo-text">
+      <strong>Mi Jornada</strong>
+      <small>Control laboral</small>
+    </div>
+  </div>
 
-        <div class="section">
-            <h2 class="section-title">Panel de Control</h2>
-            <div class="tabs">
-                <div class="tab active" onclick="cambiarTab('jornadas',this)">📋 Jornadas</div>
-                <div class="tab" onclick="cambiarTab('vacaciones',this)">🏖️ Vacaciones</div>
-                <div class="tab" onclick="cambiarTab('festivos',this)">🎉 Festivos</div>
-                <div class="tab" onclick="cambiarTab('config',this)">⚙️ Configuración</div>
-            </div>
+  <nav class="nav">
+    <button class="active" data-page="inicio">
+      <span class="nav-icon">🏠</span><span class="nav-text">Inicio</span>
+    </button>
 
-            <div id="tab-jornadas" class="tab-content active">
-                <form id="formJornada">
-                    <div class="form-grid">
-                        <div><label>Fecha *</label><input type="date" id="fecha" required></div>
-                        <div><label>Hora Entrada *</label><input type="time" id="entrada" required></div>
-                        <div><label>Hora Salida *</label><input type="time" id="salida" required></div>
-                        <div><label>Tipo de Día *</label><select id="tipoDia"><option value="laborable">Laborable</option><option value="vacaciones">Vacaciones</option><option value="festivo">Festivo</option></select></div>
-                    </div>
-                    <button type="submit" class="btn">✅ Registrar Jornada</button>
-                </form>
-                <div class="table-container">
-                    <table id="tablaJornadas"><thead><tr><th>Fecha</th><th>Entrada</th><th>Salida</th><th>Tipo</th><th>Acción</th></tr></thead><tbody></tbody></table>
-                </div>
-            </div>
+    <button data-page="calendario">
+      <span class="nav-icon">📅</span><span class="nav-text">Calendario</span>
+    </button>
 
-            <div id="tab-vacaciones" class="tab-content">
-                <form id="formVacaciones">
-                    <div class="form-grid">
-                        <div><label>Fecha Inicio</label><input type="date" id="vacacionesInicio" required></div>
-                        <div><label>Fecha Fin</label><input type="date" id="vacacionesFin" required></div>
-                        <div><label>Nombre (opcional)</label><input type="text" id="vacacionesNombre" placeholder="Ej: Vacaciones verano"></div>
-                    </div>
-                    <button type="submit" class="btn">🏖️ Añadir Vacaciones</button>
-                </form>
-                <div id="listaVacaciones" style="margin-top:20px;"></div>
-            </div>
+    <button data-page="movimientos">
+      <span class="nav-icon">📋</span><span class="nav-text">Movimientos</span>
+    </button>
 
-            <div id="tab-festivos" class="tab-content">
-                <h3 style="margin-bottom:15px;color:#6366f1">🎊 Festivos Nacionales (España)</h3>
-                <div id="festivosNacionales"></div>
-            </div>
+    <button data-page="estadisticas">
+      <span class="nav-icon">📊</span><span class="nav-text">Estadísticas</span>
+    </button>
 
-            <div id="tab-config" class="tab-content">
-                <form id="formConfig">
-                    <div class="form-grid">
-                        <div><label>Total Horas Convenio Anuales</label><input type="number" id="totalHorasConvenio" value="1776" min="0"></div>
-                        <div><label>Total Días Vacaciones Anuales</label><input type="number" id="totalDiasVacaciones" value="22" min="0"></div>
-                    </div>
-                    <button type="submit" class="btn">💾 Guardar Configuración</button>
-                </form>
-            </div>
-        </div>
+    <button data-page="configuracion">
+      <span class="nav-icon">⚙️</span><span class="nav-text">Configuración</span>
+    </button>
+  </nav>
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+  <div>
+    <div class="page-title" id="pageTitle">Mi Jornada</div>
+    <div class="date-label" id="todayLabel"></div>
+  </div>
+
+  <button class="btn btn-primary" onclick="openModal()">
+    ＋ Añadir
+  </button>
+</header>
+
+<div class="container">
+
+<!-- INICIO -->
+
+<section class="page active" id="page-inicio">
+
+  <div class="cards">
+
+    <div class="card metric">
+      <div class="metric-icon">🏖️</div>
+      <h3 id="vacRemaining">22</h3>
+      <p>Vacaciones restantes</p>
+      <small id="vacUsed">0 utilizadas</small>
     </div>
 
-    <div class="modal" id="modalJornada">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 style="color:#f1f5f9">Registrar Jornada</h2>
-                <button class="modal-close" onclick="cerrarModal()">&times;</button>
-            </div>
-            <form id="formJornadaModal">
-                <div class="form-grid">
-                    <div><label>Fecha *</label><input type="date" id="modalFecha" required></div>
-                    <div><label>Hora Entrada *</label><input type="time" id="modalEntrada" required></div>
-                    <div><label>Hora Salida *</label><input type="time" id="modalSalida" required></div>
-                    <div><label>Tipo de Día *</label><select id="modalTipoDia"><option value="laborable">Laborable</option><option value="vacaciones">Vacaciones</option><option value="festivo">Festivo</option></select></div>
-                </div>
-                <div style="display:flex;gap:10px;margin-top:15px">
-                    <button type="submit" class="btn">✅ Guardar</button>
-                    <button type="button" class="btn btn-danger" onclick="cerrarModal()">Cancelar</button>
-                </div>
-            </form>
-        </div>
+    <div class="card metric">
+      <div class="metric-icon">🕐</div>
+      <h3 id="freeRemaining">16 h</h3>
+      <p>Libre disposición</p>
+      <small id="freeUsed">0 h utilizadas</small>
     </div>
 
-    <button class="fab" onclick="abrirModal()">+</button>
+    <div class="card metric">
+      <div class="metric-icon">⏱️</div>
+      <h3 id="convBalance">0 h</h3>
+      <p>Horas de convenio</p>
+      <small>Saldo actual</small>
+    </div>
 
-    <script>
-        let jornadas=JSON.parse(localStorage.getItem('jornadas'))||[];
-        let vacaciones=JSON.parse(localStorage.getItem('vacaciones'))||[];
-        let config=JSON.parse(localStorage.getItem('config'))||{totalHorasConvenio:1776,totalDiasVacaciones:22};
-        const festivosNacionales=[
-            {fecha:'2025-01-01',nombre:'Año Nuevo'},{fecha:'2025-01-06',nombre:'Reyes'},{fecha:'2025-04-18',nombre:'Viernes Santo'},
-            {fecha:'2025-05-01',nombre:'Día del Trabajador'},{fecha:'2025-08-15',nombre:'Asunción'},{fecha:'2025-10-12',nombre:'Fiesta Nacional'},
-            {fecha:'2025-11-01',nombre:'Todos los Santos'},{fecha:'2025-12-06',nombre:'Constitución'},{fecha:'2025-12-08',nombre:'Inmaculada'},{fecha:'2025-12-25',nombre:'Navidad'}
-        ];
-        let fechaActual=new Date();
+    <div class="card metric">
+      <div class="metric-icon">💼</div>
+      <h3 id="workHours">0 h</h3>
+      <p>Horas registradas</p>
+      <small>Este año</small>
+    </div>
 
-        document.getElementById('totalHorasConvenio').value=config.totalHorasConvenio;
-        document.getElementById('totalDiasVacaciones').value=config.totalDiasVacaciones;
-        document.getElementById('fecha').valueAsDate=new Date();
-        document.getElementById('modalFecha').value=new Date().toISOString().split('T')[0];
+  </div>
 
-        document.getElementById('formJornada').addEventListener('submit',guardarJornada);
-        document.getElementById('formJornadaModal').addEventListener('submit',guardarJornadaModal);
-        document.getElementById('formVacaciones').addEventListener('submit',guardarVacaciones);
-        document.getElementById('formConfig').addEventListener('submit',guardarConfig);
+  <div class="grid2">
 
-        renderizarTodo();
-        renderizarCalendario();
+    <div class="card panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Calendario</div>
+          <div class="panel-sub" id="miniMonth"></div>
+        </div>
 
-        function renderizarTodo(){
-            renderizarDashboard();
-            renderizarTabla();
-            renderizarVacacionesLista();
-            renderizarFestivos();
-            renderizarProximoFestivo();
+        <button class="btn btn-secondary" onclick="showPage('calendario')">
+          Ver completo
+        </button>
+      </div>
+
+      <div id="miniCalendar"></div>
+    </div>
+
+    <div class="card panel">
+
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Acciones rápidas</div>
+          <div class="panel-sub">Añade información rápidamente</div>
+        </div>
+      </div>
+
+      <div class="quick">
+
+        <button onclick="quickAdd('Vacaciones')">
+          <strong>🏖️ Vacaciones</strong>
+          <span>Añadir día</span>
+        </button>
+
+        <button onclick="quickAdd('Libre disposición')">
+          <strong>🕐 Libre disposición</strong>
+          <span>Añadir horas</span>
+        </button>
+
+        <button onclick="quickAdd('Horas convenio')">
+          <strong>⏱️ Convenio</strong>
+          <span>Modificar saldo</span>
+        </button>
+
+        <button onclick="quickAdd('Jornada')">
+          <strong>💼 Jornada</strong>
+          <span>Registrar horas</span>
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="card panel">
+
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">Últimos movimientos</div>
+        <div class="panel-sub">Actividad reciente</div>
+      </div>
+
+      <button class="btn btn-secondary" onclick="showPage('movimientos')">
+        Ver todos
+      </button>
+    </div>
+
+    <div id="recentMovements"></div>
+
+  </div>
+
+</section>
+
+
+<!-- CALENDARIO -->
+
+<section class="page" id="page-calendario">
+
+  <div class="card panel">
+
+    <div class="calendar-head">
+
+      <div>
+        <div class="calendar-title" id="calendarTitle"></div>
+        <div class="panel-sub">Pulsa un día para añadir un movimiento</div>
+      </div>
+
+      <div class="calendar-actions">
+        <button class="icon-btn" onclick="changeMonth(-1)">‹</button>
+        <button class="icon-btn" onclick="goToday()">Hoy</button>
+        <button class="icon-btn" onclick="changeMonth(1)">›</button>
+      </div>
+
+    </div>
+
+    <div class="weekdays">
+      <div>L</div>
+      <div>M</div>
+      <div>X</div>
+      <div>J</div>
+      <div>V</div>
+      <div>S</div>
+      <div>D</div>
+    </div>
+
+    <div class="calendar" id="calendar"></div>
+
+  </div>
+
+  <div class="card panel">
+
+    <div class="panel-title">Leyenda</div>
+
+    <div style="display:flex;gap:15px;flex-wrap:wrap;margin-top:15px;font-size:13px">
+      <span>🔵 Vacaciones</span>
+      <span>🟢 Libre disposición</span>
+      <span>🟡 Convenio</span>
+      <span>🔴 Festivo</span>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- MOVIMIENTOS -->
+
+<section class="page" id="page-movimientos">
+
+  <div class="card panel">
+
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">Movimientos</div>
+        <div class="panel-sub">Todos tus registros</div>
+      </div>
+
+      <button class="btn btn-primary" onclick="openModal()">
+        ＋ Añadir
+      </button>
+    </div>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Tipo</th>
+            <th>Cantidad</th>
+            <th>Nota</th>
+            <th></th>
+          </tr>
+        </thead>
+
+        <tbody id="movementTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ESTADÍSTICAS -->
+
+<section class="page" id="page-estadisticas">
+
+  <div class="stats-grid">
+
+    <div class="card stat-box">
+      <div class="panel-sub">Vacaciones utilizadas</div>
+      <h2 id="statVac">0 días</h2>
+      <div class="progress">
+        <div class="progress-bar" id="statVacBar"></div>
+      </div>
+    </div>
+
+    <div class="card stat-box">
+      <div class="panel-sub">Libre disposición</div>
+      <h2 id="statFree">0 h</h2>
+      <div class="progress">
+        <div class="progress-bar" id="statFreeBar"></div>
+      </div>
+    </div>
+
+    <div class="card stat-box">
+      <div class="panel-sub">Horas trabajadas</div>
+      <h2 id="statHours">0 h</h2>
+      <div class="progress">
+        <div class="progress-bar" id="statHoursBar"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card panel" style="margin-top:20px">
+
+    <div class="panel-title">Resumen anual</div>
+
+    <div id="yearSummary" style="margin-top:18px"></div>
+
+  </div>
+
+</section>
+
+
+<!-- CONFIGURACIÓN -->
+
+<section class="page" id="page-configuracion">
+
+  <div class="card panel">
+
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">Configuración</div>
+        <div class="panel-sub">Personaliza Mi Jornada</div>
+      </div>
+    </div>
+
+    <div class="form-grid">
+
+      <div class="field">
+        <label>Días de vacaciones al año</label>
+        <input id="cfgVac" type="number" min="0" step=".5">
+      </div>
+
+      <div class="field">
+        <label>Horas de libre disposición</label>
+        <input id="cfgFree" type="number" min="0" step=".5">
+      </div>
+
+      <div class="field">
+        <label>Saldo inicial convenio</label>
+        <input id="cfgConv" type="number" step=".25">
+      </div>
+
+      <div class="field">
+        <label>Horas jornada diaria</label>
+        <input id="cfgDay" type="number" min="0" step=".25">
+      </div>
+
+      <div class="field">
+        <label>Días laborales por semana</label>
+        <select id="cfgWeek">
+          <option value="5">5 días</option>
+          <option value="6">6 días</option>
+          <option value="7">7 días</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Primer día de la semana</label>
+        <select id="cfgStart">
+          <option value="1">Lunes</option>
+          <option value="0">Domingo</option>
+        </select>
+      </div>
+
+      <div class="field full">
+        <label>Festivos personalizados</label>
+        <textarea id="cfgHolidays" rows="5"
+          placeholder="2026-12-25, Navidad&#10;2026-12-08, Inmaculada"></textarea>
+      </div>
+
+    </div>
+
+    <div style="margin-top:20px">
+      <button class="btn btn-primary" onclick="saveConfig()">
+        💾 Guardar configuración
+      </button>
+    </div>
+
+  </div>
+
+
+  <div class="card panel">
+
+    <div class="panel-title">Apariencia</div>
+
+    <div class="form-grid" style="margin-top:18px">
+
+      <div class="field">
+        <label>Tema de color</label>
+
+        <select id="themeSelect" onchange="changeTheme(this.value)">
+          <option value="blue">Azul</option>
+          <option value="green">Verde</option>
+          <option value="purple">Morado</option>
+          <option value="orange">Naranja</option>
+          <option value="teal">Turquesa</option>
+        </select>
+
+      </div>
+
+      <div class="field">
+
+        <label>Modo</label>
+
+        <select id="modeSelect" onchange="changeMode(this.value)">
+          <option value="light">☀️ Claro</option>
+          <option value="dark">🌙 Oscuro</option>
+        </select>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="card panel">
+
+    <div class="panel-title">Datos</div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+
+      <button class="btn btn-primary" onclick="exportData()">
+        📤 Exportar datos
+      </button>
+
+      <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">
+        📥 Importar datos
+      </button>
+
+      <button class="btn btn-danger" onclick="resetData()">
+        🗑️ Borrar todos los datos
+      </button>
+
+      <input id="importFile" type="file" accept=".json" style="display:none"
+        onchange="importData(event)">
+
+    </div>
+
+  </div>
+
+</section>
+
+</div>
+</main>
+</div>
+
+
+<!-- MOBILE NAV -->
+
+<nav class="mobile-nav">
+
+  <button class="active" data-page="inicio">
+    <span>🏠</span>
+    <span>Inicio</span>
+  </button>
+
+  <button data-page="calendario">
+    <span>📅</span>
+    <span>Calendario</span>
+  </button>
+
+  <button data-page="movimientos">
+    <span>📋</span>
+    <span>Movimientos</span>
+  </button>
+
+  <button data-page="estadisticas">
+    <span>📊</span>
+    <span>Estadísticas</span>
+  </button>
+
+  <button data-page="configuracion">
+    <span>⚙️</span>
+    <span>Ajustes</span>
+  </button>
+
+</nav>
+
+
+<!-- MODAL -->
+
+<div class="modal" id="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-head">
+
+      <h2>Añadir movimiento</h2>
+
+      <button class="icon-btn" onclick="closeModal()">×</button>
+
+    </div>
+
+    <div class="form-grid">
+
+      <div class="field full">
+
+        <label>Tipo</label>
+
+        <select id="moveType">
+          <option value="Vacaciones">🏖️ Vacaciones</option>
+          <option value="Libre disposición">🕐 Libre disposición</option>
+          <option value="Horas convenio">⏱️ Horas convenio</option>
+          <option value="Jornada">💼 Jornada</option>
+        </select>
+
+      </div>
+
+      <div class="field">
+        <label>Fecha</label>
+        <input type="date" id="moveDate">
+      </div>
+
+      <div class="field">
+        <label id="amountLabel">Cantidad</label>
+        <input type="number" id="moveAmount" step=".25" value="1">
+      </div>
+
+      <div class="field full">
+
+        <label>Nota</label>
+
+        <textarea id="moveNote" rows="3"
+          placeholder="Añade una nota..."></textarea>
+
+      </div>
+
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
+
+      <button class="btn btn-secondary" onclick="closeModal()">
+        Cancelar
+      </button>
+
+      <button class="btn btn-primary" onclick="saveMovement()">
+        Guardar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+/* =========================================================
+   MI JORNADA
+   Aplicación autónoma para AppsGeyser
+   ========================================================= */
+
+const STORAGE_KEY="mi_jornada_v4";
+
+let state={
+  config:{
+    vac:22,
+    free:16,
+    conv:0,
+    day:8,
+    week:5,
+    start:1,
+    holidays:[]
+  },
+
+  movements:[],
+
+  theme:"blue",
+  mode:"light",
+
+  calendarDate:new Date().toISOString().slice(0,7)
+};
+
+
+/* =========================
+   UTILIDADES
+========================= */
+
+function todayISO(){
+  const d=new Date();
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,"0");
+  const day=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+
+
+function formatDate(date){
+  if(!date)return "";
+  const d=new Date(date+"T00:00:00");
+
+  return d.toLocaleDateString("es-ES",{
+    day:"2-digit",
+    month:"2-digit",
+    year:"numeric"
+  });
+}
+
+
+function formatNumber(n){
+  n=Number(n)||0;
+
+  return Number.isInteger(n)
+    ? String(n)
+    : n.toFixed(2).replace(/\.00$/,"").replace(".",",");
+}
+
+
+function escapeHtml(str){
+  return String(str??"")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+
+/* =========================
+   GUARDADO
+========================= */
+
+function saveState(){
+  try{
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        config:state.config,
+        movements:state.movements,
+        theme:state.theme,
+        mode:state.mode
+      })
+    );
+  }catch(e){
+    console.error(e);
+  }
+}
+
+
+function loadState(){
+
+  try{
+
+    const raw=localStorage.getItem(STORAGE_KEY);
+
+    if(raw){
+
+      const saved=JSON.parse(raw);
+
+      state={
+        ...state,
+        ...saved,
+        config:{
+          ...state.config,
+          ...(saved.config||{})
         }
+      };
 
-        function renderizarDashboard(){
-            const horasTrabajadas=jornadas.filter(j=>j.tipo==='laborable').reduce((t,j)=>{
-                const e=new Date('2000-01-01T'+j.entrada);
-                const s=new Date('2000-01-01T'+j.salida);
-                return t+(s-e)/(1000*60*60);
-            },0);
-            document.getElementById('horasConvenio').textContent=Math.round(config.totalHorasConvenio-horasTrabajadas);
-            const diasVacaciones=vacaciones.reduce((t,v)=>{
-                const i=new Date(v.inicio);
-                const f=new Date(v.fin);
-                return t+Math.floor((f-i)/(1000*60*60*24))+1;
-            },0);
-            document.getElementById('diasVacaciones').textContent=config.totalDiasVacaciones-diasVacaciones;
-        }
+    }
 
-        function renderizarCalendario(){
-            const grid=document.getElementById('calendarGrid');
-            grid.innerHTML='';
-            const meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-            document.getElementById('calendarMonth').textContent=meses[fechaActual.getMonth()]+' '+fechaActual.getFullYear();
-            ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'].forEach(d=>{
-                const h=document.createElement('div');
-                h.className='calendar-day-header';
-                h.textContent=d;
-                grid.appendChild(h);
-            });
-            const primerDia=new Date(fechaActual.getFullYear(),fechaActual.getMonth(),1);
-            const ultimoDia=new Date(fechaActual.getFullYear(),fechaActual.getMonth()+1,0);
-            for(let i=0;i<primerDia.getDay();i++){
-                const d=document.createElement('div');
-                d.className='calendar-day';
-                d.style.opacity='0.3';
-                grid.appendChild(d);
-            }
-            const hoy=new Date().toISOString().split('T')[0];
-            for(let dia=1;dia<=ultimoDia.getDate();dia++){
-                const fechaStr=fechaActual.getFullYear()+'-'+String(fechaActual.getMonth()+1).padStart(2,'0')+'-'+String(dia).padStart(2,'0');
-                const d=document.createElement('div');
-                d.className='calendar-day';
-                if(fechaStr===hoy)d.classList.add('today');
-                const jornada=jornadas.find(j=>j.fecha===fechaStr);
-                if(jornada)d.classList.add(jornada.tipo);
-                const vacacionesPeriodo=vacaciones.find(v=>new Date(fechaStr)>=new Date(v.inicio)&&new Date(fechaStr)<=new Date(v.fin));
-                if(vacacionesPeriodo)d.classList.add('vacation');
-                d.innerHTML='<div class="calendar-day-number">'+dia+'</div>';
-                d.onclick=()=>{document.getElementById('modalFecha').value=fechaStr;abrirModal();};
-                grid.appendChild(d);
-            }
-        }
+  }catch(e){
+    console.error(e);
+  }
 
-        function cambiarMes(delta){
-            fechaActual.setMonth(fechaActual.getMonth()+delta);
-            renderizarCalendario();
-        }
+  applyAppearance();
+}
 
-        function renderizarTabla(){
-            const tbody=document.querySelector('#tablaJornadas tbody');
-            tbody.innerHTML='';
-            jornadas.slice().reverse().forEach((j,i)=>{
-                const tr=document.createElement('tr');
-                tr.innerHTML='<td>'+j.fecha+'</td><td>'+j.entrada+'</td><td>'+j.salida+'</td><td><span class="tag tag-'+j.tipo+'">'+j.tipo+'</span></td><td><button class="btn btn-danger" onclick="eliminarJornada('+(jornadas.length-1-i)+')">X</button></td>';
-                tbody.appendChild(tr);
-            });
-        }
 
-        function renderizarVacacionesLista(){
-            const lista=document.getElementById('listaVacaciones');
-            lista.innerHTML='';
-            vacaciones.forEach((v,i)=>{
-                const d=document.createElement('div');
-                d.className='holiday-item';
-                d.innerHTML='<div><strong>'+(v.nombre||'Vacaciones')+'</strong><br><span style="color:#94a3b8;font-size:0.85rem">'+v.inicio+' - '+v.fin+'</span></div><button class="btn btn-danger" onclick="eliminarVacaciones('+i+')">X</button>';
-                lista.appendChild(d);
-            });
-        }
+/* =========================
+   APARIENCIA
+========================= */
 
-        function renderizarFestivos(){
-            const container=document.getElementById('festivosNacionales');
-            container.innerHTML='';
-            festivosNacionales.forEach(f=>{
-                const d=document.createElement('div');
-                d.className='checkbox-item';
-                d.innerHTML='<span>🎉</span><span><strong>'+f.nombre+'</strong><br><span style="color:#94a3b8;font-size:0.85rem">'+f.fecha+'</span></span>';
-                container.appendChild(d);
-            });
-        }
+function applyAppearance(){
 
-        function renderizarProximoFestivo(){
-            const hoy=new Date();
-            hoy.setHours(0,0,0,0);
-            let proximo=null;
-            let diasPara=Infinity;
-            festivosNacionales.forEach(f=>{
-                const fechaFestivo=new Date(f.fecha);
-                fechaFestivo.setHours(0,0,0,0);
-                if(fechaFestivo>=hoy){
-                    const diffDias=Math.floor((fechaFestivo-hoy)/(1000*60*60*24));
-                    if(diffDias<diasPara){diasPara=diffDias;proximo=f;}
-                }
-            });
-            if(proximo){
-                document.getElementById('proximoFestivo').textContent=proximo.nombre;
-                document.getElementById('diasParaFestivo').textContent=diasPara===0?'¡Hoy!':diasPara===1?'Mañana':'En '+diasPara+' días';
-            }
-        }
+  document.body.classList.remove(
+    "dark",
+    "theme-green",
+    "theme-purple",
+    "theme-orange",
+    "theme-teal"
+  );
 
-        function guardarJornada(e){
-            e.preventDefault();
-            jornadas.push({
-                fecha:document.getElementById('fecha').value,
-                entrada:document.getElementById('entrada').value,
-                salida:document.getElementById('salida').value,
-                tipo:document.getElementById('tipoDia').value
-            });
-            localStorage.setItem('jornadas',JSON.stringify(jornadas));
-            renderizarTodo();
-            renderizarCalendario();
-            e.target.reset();
-            document.getElementById('fecha').valueAsDate=new Date();
-        }
+  if(state.mode==="dark"){
+    document.body.classList.add("dark");
+  }
 
-        function guardarJornadaModal(e){
-            e.preventDefault();
-            jornadas.push({
-                fecha:document.getElementById('modalFecha').value,
-                entrada:document.getElementById('modalEntrada').value,
-                salida:document.getElementById('modalSalida').value,
-                tipo:document.getElementById('modalTipoDia').value
-            });
-            localStorage.setItem('jornadas',JSON.stringify(jornadas));
-            renderizarTodo();
-            renderizarCalendario();
-            cerrarModal();
-        }
+  if(state.theme!=="blue"){
+    document.body.classList.add("theme-"+state.theme);
+  }
 
-        function guardarVacaciones(e){
-            e.preventDefault();
-            vacaciones.push({
-                inicio:document.getElementById('vacacionesInicio').value,
-                fin:document.getElementById('vacacionesFin').value,
-                nombre:document.getElementById('vacacionesNombre').value
-            });
-            localStorage.setItem('vacaciones',JSON.stringify(vacaciones));
-            renderizarTodo();
-            renderizarCalendario();
-            e.target.reset();
-        }
+  const mode=document.getElementById("modeSelect");
 
-        function guardarConfig(e){
-            e.preventDefault();
-            config={
-                totalHorasConvenio:parseInt(document.getElementById('totalHorasConvenio').value),
-                totalDiasVacaciones:parseInt(document.getElementById('totalDiasVacaciones').value)
-            };
-            localStorage.setItem('config',JSON.stringify(config));
-            renderizarTodo();
-        }
+  if(mode)mode.value=state.mode;
 
-        function eliminarJornada(i){jornadas.splice(i,1);localStorage.setItem('jornadas',JSON.stringify(jornadas));renderizarTodo();renderizarCalendario();}
-        function eliminarVacaciones(i){vacaciones.splice(i,1);localStorage.setItem('vacaciones',JSON.stringify(vacaciones));renderizarTodo();renderizarCalendario();}
+  const theme=document.getElementById("themeSelect");
 
-        function cambiarTab(tab,el){
-            document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
-            el.classList.add('active');
-            document.getElementById('tab-'+tab).classList.add('active');
-        }
+  if(theme)theme.value=state.theme;
+}
 
-        function abrirModal(){document.getElementById('modalJornada').classList.add('show');}
-        function cerrarModal(){document.getElementById('modalJornada').classList.remove('show');}
-    </script>
+
+function changeMode(value){
+
+  state.mode=value;
+
+  applyAppearance();
+
+  saveState();
+}
+
+
+function changeTheme(value){
+
+  state.theme=value;
+
+  applyAppearance();
+
+  saveState();
+}
+
+
+/* =========================
+   NAVEGACIÓN
+========================= */
+
+const titles={
+  inicio:"Mi Jornada",
+  calendario:"Calendario",
+  movimientos:"Movimientos",
+  estadisticas:"Estadísticas",
+  configuracion:"Configuración"
+};
+
+
+function showPage(page){
+
+  document.querySelectorAll(".page")
+    .forEach(p=>p.classList.remove("active"));
+
+  const target=document.getElementById("page-"+page);
+
+  if(target){
+    target.classList.add("active");
+  }
+
+  document.querySelectorAll("[data-page]")
+    .forEach(btn=>{
+      btn.classList.toggle(
+        "active",
+        btn.dataset.page===page
+      );
+    });
+
+  document.getElementById("pageTitle").textContent=titles[page];
+
+  if(page==="calendario"){
+    renderCalendar();
+  }
+
+  if(page==="movimientos"){
+    renderMovements();
+  }
+
+  if(page==="estadisticas"){
+    renderStats();
+  }
+}
+
+
+document.querySelectorAll("[data-page]")
+.forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    showPage(btn.dataset.page);
+  });
+});
+
+
+/* =========================
+   CÁLCULOS
+========================= */
+
+function getMovements(type=null){
+
+  if(!type)return state.movements;
+
+  return state.movements.filter(m=>m.type===type);
+}
+
+
+function sumType(type){
+
+  return getMovements(type)
+    .reduce((sum,m)=>sum+Number(m.amount||0),0);
+}
+
+
+function vacationUsed(){
+  return sumType("Vacaciones");
+}
+
+
+function freeUsed(){
+  return sumType("Libre disposición");
+}
+
+
+function convenioBalance(){
+
+  return Number(state.config.conv||0)
+    + sumType("Horas convenio");
+}
+
+
+function workHours(){
+
+  return sumType("Jornada");
+}
+
+
+/* =========================
+   DASHBOARD
+========================= */
+
+function renderDashboard(){
+
+  const vacUsed=vacationUsed();
+  const free=freeUsed();
+
+  const vacRemaining=
+    Number(state.config.vac||0)-vacUsed;
+
+  const freeRemaining=
+    Number(state.config.free||0)-free;
+
+  document.getElementById("vacRemaining")
+    .textContent=formatNumber(vacRemaining);
+
+  document.getElementById("vacUsed")
+    .textContent=formatNumber(vacUsed)+" utilizadas";
+
+  document.getElementById("freeRemaining")
+    .textContent=formatNumber(freeRemaining)+" h";
+
+  document.getElementById("freeUsed")
+    .textContent=formatNumber(free)+" h utilizadas";
+
+  document.getElementById("convBalance")
+    .textContent=formatNumber(convenioBalance())+" h";
+
+  document.getElementById("workHours")
+    .textContent=formatNumber(workHours())+" h";
+
+  renderRecent();
+
+  renderMiniCalendar();
+}
+
+
+function renderRecent(){
+
+  const el=document.getElementById("recentMovements");
+
+  const arr=[...state.movements]
+    .sort((a,b)=>b.date.localeCompare(a.date))
+    .slice(0,6);
+
+  if(!arr.length){
+
+    el.innerHTML=
+      `<div class="panel-sub">
+        Todavía no hay movimientos registrados.
+       </div>`;
+
+    return;
+  }
+
+  el.innerHTML=arr.map(m=>movementHTML(m)).join("");
+}
+
+
+function movementHTML(m){
+
+  const icons={
+    "Vacaciones":"🏖️",
+    "Libre disposición":"🕐",
+    "Horas convenio":"⏱️",
+    "Jornada":"💼"
+  };
+
+  const colors={
+    "Vacaciones":"#dbeafe",
+    "Libre disposición":"#dcfce7",
+    "Horas convenio":"#fef3c7",
+    "Jornada":"#ede9fe"
+  };
+
+  return `
+    <div class="movement">
+
+      <div class="move-left">
+
+        <div class="move-icon"
+             style="background:${colors[m.type]||"#eee"}">
+
+          ${icons[m.type]||"📌"}
+
+        </div>
+
+        <div class="move-info">
+
+          <strong>${escapeHtml(m.type)}</strong>
+
+          <span>
+            ${formatDate(m.date)}
+            ${m.note ? " · "+escapeHtml(m.note):""}
+          </span>
+
+        </div>
+
+      </div>
+
+      <strong>
+        ${formatNumber(m.amount)}
+        ${m.type==="Jornada" ||
+          m.type==="Libre disposición" ||
+          m.type==="Horas convenio"
+          ?" h":" día(s)"}
+      </strong>
+
+    </div>
+  `;
+}
+
+
+/* =========================
+   CALENDARIO
+========================= */
+
+function getCalendarDate(){
+
+  const [y,m]=state.calendarDate
+    .split("-")
+    .map(Number);
+
+  return new Date(y,m-1,1);
+}
+
+
+function changeMonth(delta){
+
+  const d=getCalendarDate();
+
+  d.setMonth(d.getMonth()+delta);
+
+  state.calendarDate=
+    `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+
+  renderCalendar();
+  renderMiniCalendar();
+}
+
+
+function goToday(){
+
+  state.calendarDate=todayISO().slice(0,7);
+
+  renderCalendar();
+  renderMiniCalendar();
+}
+
+
+function holidayName(date){
+
+  const h=state.config.holidays||[];
+
+  const item=h.find(x=>x.date===date);
+
+  return item ? item.name : "";
+}
+
+
+function isWeekend(date){
+
+  const d=new Date(date+"T00:00:00");
+
+  const day=d.getDay();
+
+  return day===0 || day===6;
+}
+
+
+function dayMovements(date){
+
+  return state.movements.filter(m=>m.date===date);
+}
+
+
+function renderCalendar(){
+
+  const container=document.getElementById("calendar");
+
+  if(!container)return;
+
+  const d=getCalendarDate();
+
+  const year=d.getFullYear();
+  const month=d.getMonth();
+
+  document.getElementById("calendarTitle")
+    .textContent=d.toLocaleDateString("es-ES",{
+      month:"long",
+      year:"numeric"
+    });
+
+  const first=new Date(year,month,1);
+
+  let start=first.getDay();
+
+  // Monday = first day
+  start=start===0?6:start-1;
+
+  const days=new Date(year,month+1,0).getDate();
+
+  const prevDays=new Date(year,month,0).getDate();
+
+  let html="";
+
+  for(let i=0;i<42;i++){
+
+    let day=i-start+1;
+    let currentMonth=true;
+    let cellMonth=month;
+    let cellYear=year;
+
+    if(day<=0){
+
+      day=prevDays+day;
+      cellMonth=month-1;
+
+      if(cellMonth<0){
+        cellMonth=11;
+        cellYear--;
+      }
+
+      currentMonth=false;
+
+    }else if(day>days){
+
+      day=day-days;
+      cellMonth=month+1;
+
+      if(cellMonth>11){
+        cellMonth=0;
+        cellYear++;
+      }
+
+      currentMonth=false;
+    }
+
+    const date=
+      `${cellYear}-${String(cellMonth+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+
+    const moves=dayMovements(date);
+
+    const classes=["day"];
+
+    if(!currentMonth)classes.push("other");
+
+    if(date===todayISO())classes.push("today");
+
+    if(isWeekend(date))classes.push("weekend");
+
+    const holiday=holidayName(date);
+
+    if(holiday)classes.push("holiday");
+
+    if(moves.some(x=>x.type==="Vacaciones"))
+      classes.push("vacation");
+
+    else if(moves.some(x=>x.type==="Libre disposición"))
+      classes.push("free");
+
+    else if(moves.some(x=>x.type==="Horas convenio"))
+      classes.push("convenio");
+
+    let note="";
+
+    if(holiday){
+      note=holiday;
+    }else if(moves.length){
+      note=moves.map(x=>x.type).join(", ");
+    }
+
+    html+=`
+      <div class="${classes.join(" ")}"
+           onclick="openModal('${date}')">
+
+        <div class="day-number">${day}</div>
+
+        ${note ?
+          `<div class="day-note">${escapeHtml(note)}</div>`
+          :""}
+
+      </div>
+    `;
+  }
+
+  container.innerHTML=html;
+}
+
+
+function renderMiniCalendar(){
+
+  const container=document.getElementById("miniCalendar");
+
+  if(!container)return;
+
+  const d=getCalendarDate();
+
+  document.getElementById("miniMonth")
+    .textContent=d.toLocaleDateString("es-ES",{
+      month:"long",
+      year:"numeric"
+    });
+
+  const year=d.getFullYear();
+  const month=d.getMonth();
+
+  const first=new Date(year,month,1);
+
+  let start=first.getDay();
+
+  start=start===0?6:start-1;
+
+  const days=new Date(year,month+1,0).getDate();
+
+  let html=`
+    <div class="weekdays">
+      <div>L</div><div>M</div><div>X</div>
+      <div>J</div><div>V</div><div>S</div><div>D</div>
+    </div>
+    <div class="calendar">
+  `;
+
+  for(let i=0;i<start;i++){
+    html+=`<div class="day other"></div>`;
+  }
+
+  for(let day=1;day<=days;day++){
+
+    const date=
+      `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+
+    const moves=dayMovements(date);
+
+    let cls="day";
+
+    if(date===todayISO())cls+=" today";
+
+    if(isWeekend(date))cls+=" weekend";
+
+    if(holidayName(date))cls+=" holiday";
+
+    if(moves.some(x=>x.type==="Vacaciones"))
+      cls+=" vacation";
+    else if(moves.some(x=>x.type==="Libre disposición"))
+      cls+=" free";
+    else if(moves.some(x=>x.type==="Horas convenio"))
+      cls+=" convenio";
+
+    html+=`
+      <div class="${cls}" onclick="openModal('${date}')">
+        <div class="day-number">${day}</div>
+      </div>
+    `;
+  }
+
+  html+="</div>";
+
+  container.innerHTML=html;
+}
+
+
+/* =========================
+   MODAL
+========================= */
+
+function openModal(date=null,type=null){
+
+  document.getElementById("modal").classList.add("show");
+
+  document.getElementById("moveDate").value=
+    date || todayISO();
+
+  document.getElementById("moveType").value=
+    type || "Vacaciones";
+
+  document.getElementById("moveAmount").value=
+    type==="Jornada"
+      ?state.config.day
+      :1;
+
+  document.getElementById("moveNote").value="";
+
+  updateAmountLabel();
+}
+
+
+function closeModal(){
+
+  document.getElementById("modal")
+    .classList.remove("show");
+}
+
+
+document.getElementById("moveType")
+  .addEventListener("change",updateAmountLabel);
+
+
+function updateAmountLabel(){
+
+  const type=document.getElementById("moveType").value;
+
+  const label=document.getElementById("amountLabel");
+
+  if(type==="Vacaciones"){
+    label.textContent="Días";
+  }else{
+    label.textContent="Horas";
+  }
+
+  if(type==="Jornada"){
+    document.getElementById("moveAmount").value=
+      state.config.day;
+  }
+}
+
+
+function quickAdd(type){
+  openModal(null,type);
+}
+
+
+function saveMovement(){
+
+  const type=
+    document.getElementById("moveType").value;
+
+  const date=
+    document.getElementById("moveDate").value;
+
+  const amount=
+    Number(document.getElementById("moveAmount").value);
+
+  const note=
+    document.getElementById("moveNote").value.trim();
+
+  if(!date){
+    toast("Selecciona una fecha");
+    return;
+  }
+
+  if(!amount || amount<0){
+    toast("Introduce una cantidad válida");
+    return;
+  }
+
+  state.movements.push({
+    id:Date.now().toString(),
+    type,
+    date,
+    amount,
+    note
+  });
+
+  saveState();
+
+  closeModal();
+
+  renderAll();
+
+  toast("Movimiento guardado correctamente");
+}
+
+
+/* =========================
+   MOVIMIENTOS
+========================= */
+
+function renderMovements(){
+
+  const tbody=document.getElementById("movementTable");
+
+  const arr=[...state.movements]
+    .sort((a,b)=>b.date.localeCompare(a.date));
+
+  if(!arr.length){
+
+    tbody.innerHTML=`
+      <tr>
+        <td colspan="5"
+            style="text-align:center;color:var(--muted);padding:30px">
+          No hay movimientos registrados.
+        </td>
+      </tr>`;
+
+    return;
+  }
+
+  tbody.innerHTML=arr.map(m=>`
+
+    <tr>
+
+      <td>${formatDate(m.date)}</td>
+
+      <td>${escapeHtml(m.type)}</td>
+
+      <td>
+        ${formatNumber(m.amount)}
+        ${m.type==="Vacaciones"?"día(s)":"h"}
+      </td>
+
+      <td>${escapeHtml(m.note||"—")}</td>
+
+      <td>
+        <button class="btn btn-danger"
+                onclick="deleteMovement('${m.id}')">
+          Eliminar
+        </button>
+      </td>
+
+    </tr>
+
+  `).join("");
+}
+
+
+function deleteMovement(id){
+
+  if(!confirm("¿Quieres eliminar este movimiento?"))
+    return;
+
+  state.movements=
+    state.movements.filter(m=>m.id!==id);
+
+  saveState();
+
+  renderAll();
+
+  toast("Movimiento eliminado");
+}
+
+
+/* =========================
+   ESTADÍSTICAS
+========================= */
+
+function renderStats(){
+
+  const vac=vacationUsed();
+
+  const free=freeUsed();
+
+  const hours=workHours();
+
+  document.getElementById("statVac")
+    .textContent=formatNumber(vac)+" días";
+
+  document.getElementById("statFree")
+    .textContent=formatNumber(free)+" h";
+
+  document.getElementById("statHours")
+    .textContent=formatNumber(hours)+" h";
+
+  const vacTotal=Number(state.config.vac)||1;
+
+  const freeTotal=Number(state.config.free)||1;
+
+  document.getElementById("statVacBar").style.width=
+    Math.min(100,vac/vacTotal*100)+"%";
+
+  document.getElementById("statFreeBar").style.width=
+    Math.min(100,free/freeTotal*100)+"%";
+
+  document.getElementById("statHoursBar").style.width=
+    Math.min(100,hours/1760*100)+"%";
+
+  renderYearSummary();
+}
+
+
+function renderYearSummary(){
+
+  const el=document.getElementById("yearSummary");
+
+  const year=new Date().getFullYear();
+
+  const months=[];
+
+  for(let i=1;i<=12;i++){
+
+    const prefix=
+      `${year}-${String(i).padStart(2,"0")}`;
+
+    const movements=
+      state.movements.filter(m=>m.date.startsWith(prefix));
+
+    const vac=
+      movements
+        .filter(m=>m.type==="Vacaciones")
+        .reduce((s,m)=>s+Number(m.amount),0);
+
+    const hours=
+      movements
+        .filter(m=>m.type==="Jornada")
+        .reduce((s,m)=>s+Number(m.amount),0);
+
+    months.push({
+      name:new Date(year,i-1,1)
+        .toLocaleDateString("es-ES",{month:"long"}),
+      vac,
+      hours
+    });
+  }
+
+  el.innerHTML=months.map(m=>`
+
+    <div style="
+      display:grid;
+      grid-template-columns:1fr 100px 100px;
+      gap:10px;
+      padding:11px 0;
+      border-bottom:1px solid var(--border);
+      font-size:13px">
+
+      <strong style="text-transform:capitalize">
+        ${m.name}
+      </strong>
+
+      <span>${formatNumber(m.vac)} vacaciones</span>
+
+      <span>${formatNumber(m.hours)} h</span>
+
+    </div>
+
+  `).join("");
+}
+
+
+/* =========================
+   CONFIGURACIÓN
+========================= */
+
+function loadConfigForm(){
+
+  const c=state.config;
+
+  document.getElementById("cfgVac").value=c.vac;
+
+  document.getElementById("cfgFree").value=c.free;
+
+  document.getElementById("cfgConv").value=c.conv;
+
+  document.getElementById("cfgDay").value=c.day;
+
+  document.getElementById("cfgWeek").value=c.week;
+
+  document.getElementById("cfgStart").value=c.start;
+
+  document.getElementById("cfgHolidays").value=
+    (c.holidays||[])
+      .map(h=>`${h.date}, ${h.name}`)
+      .join("\n");
+
+  document.getElementById("themeSelect").value=
+    state.theme;
+
+  document.getElementById("modeSelect").value=
+    state.mode;
+}
+
+
+function saveConfig(){
+
+  state.config.vac=
+    Number(document.getElementById("cfgVac").value)||0;
+
+  state.config.free=
+    Number(document.getElementById("cfgFree").value)||0;
+
+  state.config.conv=
+    Number(document.getElementById("cfgConv").value)||0;
+
+  state.config.day=
+    Number(document.getElementById("cfgDay").value)||8;
+
+  state.config.week=
+    Number(document.getElementById("cfgWeek").value)||5;
+
+  state.config.start=
+    Number(document.getElementById("cfgStart").value)||1;
+
+  const lines=
+    document.getElementById("cfgHolidays").value
+      .split("\n")
+      .map(x=>x.trim())
+      .filter(Boolean);
+
+  state.config.holidays=lines.map(line=>{
+
+    const parts=line.split(",");
+
+    return {
+      date:(parts.shift()||"").trim(),
+      name:parts.join(",").trim()||"Festivo"
+    };
+
+  }).filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.date));
+
+  saveState();
+
+  renderAll();
+
+  toast("Configuración guardada");
+}
+
+
+/* =========================
+   EXPORTAR
+========================= */
+
+function exportData(){
+
+  const data={
+    app:"Mi Jornada",
+    version:4,
+    exportedAt:new Date().toISOString(),
+    config:state.config,
+    movements:state.movements,
+    theme:state.theme,
+    mode:state.mode
+  };
+
+  const blob=new Blob(
+    [JSON.stringify(data,null,2)],
+    {type:"application/json"}
+  );
+
+  const url=URL.createObjectURL(blob);
+
+  const a=document.createElement("a");
+
+  a.href=url;
+
+  a.download=
+    "mi-jornada-backup-"+todayISO()+".json";
+
+  document.body.appendChild(a);
+
+  a.click();
+
+  a.remove();
+
+  URL.revokeObjectURL(url);
+
+  toast("Copia de seguridad creada");
+}
+
+
+function importData(event){
+
+  const file=event.target.files[0];
+
+  if(!file)return;
+
+  const reader=new FileReader();
+
+  reader.onload=function(){
+
+    try{
+
+      const data=JSON.parse(reader.result);
+
+      if(!data.config || !Array.isArray(data.movements)){
+        throw new Error("Formato inválido");
+      }
+
+      state.config={
+        ...state.config,
+        ...data.config
+      };
+
+      state.movements=data.movements;
+
+      state.theme=data.theme||"blue";
+
+      state.mode=data.mode||"light";
+
+      saveState();
+
+      applyAppearance();
+
+      loadConfigForm();
+
+      renderAll();
+
+      toast("Datos importados correctamente");
+
+    }catch(e){
+
+      alert("No se ha podido importar el archivo.");
+
+    }
+
+    event.target.value="";
+  };
+
+  reader.readAsText(file);
+}
+
+
+/* =========================
+   BORRAR DATOS
+========================= */
+
+function resetData(){
+
+  if(!confirm(
+    "Se eliminarán todos los movimientos y se restaurará la configuración inicial. ¿Continuar?"
+  )){
+    return;
+  }
+
+  localStorage.removeItem(STORAGE_KEY);
+
+  state={
+    config:{
+      vac:22,
+      free:16,
+      conv:0,
+      day:8,
+      week:5,
+      start:1,
+      holidays:[]
+    },
+    movements:[],
+    theme:"blue",
+    mode:"light",
+    calendarDate:todayISO().slice(0,7)
+  };
+
+  applyAppearance();
+
+  loadConfigForm();
+
+  renderAll();
+
+  toast("Datos restaurados");
+}
+
+
+/* =========================
+   TOAST
+========================= */
+
+let toastTimer;
+
+function toast(message){
+
+  const el=document.getElementById("toast");
+
+  el.textContent=message;
+
+  el.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer=setTimeout(()=>{
+    el.classList.remove("show");
+  },2500);
+}
+
+
+/* =========================
+   FECHA SUPERIOR
+========================= */
+
+function updateTodayLabel(){
+
+  const d=new Date();
+
+  document.getElementById("todayLabel")
+    .textContent=d.toLocaleDateString(
+      "es-ES",
+      {
+        weekday:"long",
+        day:"numeric",
+        month:"long",
+        year:"numeric"
+      }
+    );
+}
+
+
+/* =========================
+   TODO
+========================= */
+
+function renderAll(){
+
+  renderDashboard();
+
+  renderCalendar();
+
+  renderMovements();
+
+  renderStats();
+}
+
+
+/* =========================
+   INICIO
+========================= */
+
+loadState();
+
+updateTodayLabel();
+
+loadConfigForm();
+
+renderAll();
+
+
+/* Cerrar modal pulsando fuera */
+
+document.getElementById("modal")
+.addEventListener("click",function(e){
+
+  if(e.target===this){
+    closeModal();
+  }
+
+});
+
+
+/* =========================
+   TECLADO / ANDROID
+========================= */
+
+document.addEventListener("keydown",function(e){
+
+  if(e.key==="Escape"){
+    closeModal();
+  }
+
+});
+
+
+/* Evita que un toque mantenido seleccione
+   accidentalmente elementos de la interfaz */
+
+document.addEventListener("contextmenu",function(e){
+
+  if(e.target.closest("button") ||
+     e.target.closest(".day")){
+    e.preventDefault();
+  }
+
+});
+
+</script>
+
 </body>
-</html>
+    </html>
