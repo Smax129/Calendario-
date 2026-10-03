@@ -2,225 +2,381 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#6366f1">
-    <title>Mi Calendario Laboral</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario Laboral</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0f172a, #1e1b4b); color: #f1f5f9; min-height: 100vh; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        header { text-align: center; margin-bottom: 30px; padding: 25px; background: rgba(30, 41, 59, 0.8); border-radius: 20px; border: 1px solid #334155; }
-        h1 { font-size: 2rem; background: linear-gradient(135deg, #6366f1, #a855f7, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
-        .subtitle { color: #94a3b8; }
-        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .card { background: linear-gradient(135deg, #1e293b, #334155); border-radius: 20px; padding: 25px; border: 1px solid #334155; transition: all 0.3s ease; position: relative; }
-        .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #6366f1, #a855f7, #06b6d4); }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2); }
-        .card-title { font-size: 0.9rem; color: #94a3b8; margin-bottom: 10px; text-transform: uppercase; }
-        .card-value { font-size: 2.5rem; font-weight: bold; margin-bottom: 5px; }
-        .card-unit { font-size: 1rem; color: #94a3b8; }
-        .card-icon { position: absolute; top: 20px; right: 20px; font-size: 2rem; opacity: 0.2; }
-        .hours-positive { color: #10b981; }
-        .hours-negative { color: #ef4444; }
-        .section { background: #1e293b; border-radius: 20px; padding: 25px; margin-bottom: 30px; border: 1px solid #334155; }
-        .section-title { font-size: 1.3rem; margin-bottom: 20px; }
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .tab { padding: 11px 20px; background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; border-radius: 12px; cursor: pointer; font-weight: 600; color: #94a3b8; }
-        .tab.active { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 20px; }
-        .form-group { display: flex; flex-direction: column; }
-        label { font-size: 0.85rem; color: #94a3b8; margin-bottom: 7px; }
-        input, select, textarea { background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; color: #f1f5f9; padding: 13px 16px; border-radius: 12px; font-size: 1rem; }
-        .btn { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; border: none; padding: 13px 28px; border-radius: 12px; font-weight: 600; cursor: pointer; }
-        .btn:hover { transform: translateY(-2px); }
-        .btn-secondary { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
-        .btn-accent { background: linear-gradient(135deg, #06b6d4, #0891b2); }
-        .btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); }
-        .btn-group { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 14px 12px; text-align: left; border-bottom: 1px solid #334155; }
-        th { background: rgba(15, 23, 42, 0.8); color: #94a3b8; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
-        .tag { padding: 5px 13px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
-        .tag-laborable { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
-        .tag-vacaciones { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-        .tag-festivo { background: rgba(99, 102, 241, 0.2); color: #6366f1; }
-        .tag-puente { background: rgba(6, 182, 212, 0.2); color: #06b6d4; }
-        .notifications { position: fixed; top: 20px; right: 20px; z-index: 3000; }
-        .notification { background: rgba(30, 41, 59, 0.98); border-left: 4px solid #6366f1; padding: 16px 20px; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4); }
-        .notification.success { border-left-color: #10b981; }
-        .notification.warning { border-left-color: #f59e0b; }
-        .notification.danger { border-left-color: #ef4444; }
-        .holiday-list { display: grid; gap: 12px; }
-        .holiday-item { background: rgba(15, 23, 42, 0.6); padding: 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .checkbox-group { display: grid; gap: 10px; margin-top: 16px; }
-        .checkbox-item { display: flex; align-items: center; gap: 12px; padding: 13px; background: rgba(15, 23, 42, 0.5); border-radius: 10px; cursor: pointer; }
-        input[type="checkbox"] { width: 20px; height: 20px; accent-color: #6366f1; }
-        .info-box { background: rgba(99, 102, 241, 0.1); border-left: 4px solid #6366f1; padding: 18px; border-radius: 12px; margin-bottom: 22px; }
-        .info-box h4 { color: #6366f1; margin-bottom: 10px; }
-        .info-box ul { margin-left: 20px; color: #94a3b8; line-height: 1.7; }
-        .import-section { background: rgba(15, 23, 42, 0.6); border-radius: 16px; padding: 22px; margin-bottom: 22px; }
-        .import-section h3 { margin-bottom: 16px; color: #6366f1; }
-        .import-option { background: rgba(30, 41, 59, 0.6); padding: 16px; border-radius: 12px; margin-bottom: 14px; }
-        .url-input-group { display: flex; gap: 10px; flex-wrap: wrap; }
-        .url-input-group input { flex: 1; min-width: 200px; }
-        textarea { min-height: 140px; font-family: monospace; resize: vertical; width: 100%; }
-        @media (max-width: 768px) { .form-grid, .dashboard { grid-template-columns: 1fr; } .btn-group { flex-direction: column; } .btn { width: 100%; } }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#0f172a,#1e1b4b);color:#f1f5f9;padding:20px}
+        .container{max-width:1200px;margin:0 auto}
+        header{text-align:center;margin-bottom:30px;padding:20px;background:rgba(30,41,59,0.9);border-radius:20px}
+        h1{color:#6366f1;margin-bottom:10px}
+        .dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:30px}
+        .card{background:rgba(30,41,59,0.9);border-radius:16px;padding:20px;border:1px solid rgba(255,255,255,0.1)}
+        .card-title{font-size:0.85rem;color:#94a3b8;margin-bottom:8px}
+        .card-value{font-size:2rem;font-weight:bold;color:#10b981}
+        .section{background:rgba(30,41,59,0.7);border-radius:20px;padding:25px;margin-bottom:30px}
+        .section-title{font-size:1.2rem;margin-bottom:20px;color:#6366f1}
+        .tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+        .tab{padding:10px 20px;background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.1);border-radius:10px;cursor:pointer}
+        .tab.active{background:#6366f1;color:white}
+        .tab-content{display:none}
+        .tab-content.active{display:block}
+        .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin-bottom:20px}
+        label{display:block;margin-bottom:5px;color:#94a3b8;font-size:0.9rem}
+        input,select{width:100%;padding:10px;background:rgba(15,23,42,0.8);border:1px solid rgba(255,255,255,0.12);color:#f1f5f9;border-radius:8px}
+        .btn{background:#6366f1;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:bold}
+        .btn:hover{background:#4f46e5}
+        .btn-danger{background:#ef4444}
+        .calendar-container{background:rgba(15,23,42,0.6);border-radius:16px;padding:20px}
+        .calendar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+        .calendar-nav button{background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.3);color:#6366f1;padding:8px 14px;border-radius:8px;cursor:pointer}
+        .calendar-month{font-size:1.2rem;font-weight:bold;color:#6366f1}
+        .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+        .calendar-day-header{text-align:center;padding:10px;font-weight:bold;color:#94a3b8;font-size:0.85rem}
+        .calendar-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:10px;cursor:pointer;background:rgba(30,41,59,0.5);border:1px solid rgba(255,255,255,0.05);transition:all 0.3s;min-height:60px}
+        .calendar-day:hover{transform:scale(1.05);border-color:#6366f1}
+        .calendar-day.today{border:2px solid #6366f1}
+        .calendar-day.vacation{background:rgba(16,185,129,0.2);border-color:rgba(16,185,129,0.3)}
+        .calendar-day.holiday{background:rgba(99,102,241,0.2);border-color:rgba(99,102,241,0.3)}
+        .calendar-day.work{background:rgba(245,158,11,0.2);border-color:rgba(245,158,11,0.3)}
+        .calendar-day-number{font-size:0.95rem;font-weight:bold}
+        .modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:3000;align-items:center;justify-content:center;padding:20px}
+        .modal.show{display:flex}
+        .modal-content{background:#1e293b;border-radius:20px;padding:30px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto}
+        .modal-header{display:flex;justify-content:space-between;margin-bottom:20px}
+        .modal-close{background:none;border:none;color:#94a3b8;font-size:2rem;cursor:pointer}
+        .fab{position:fixed;bottom:20px;right:20px;width:56px;height:56px;border-radius:50%;background:#6366f1;color:white;border:none;font-size:1.8rem;cursor:pointer;box-shadow:0 4px 15px rgba(99,102,241,0.4)}
+        .table-container{overflow-x:auto;margin-top:15px}
+        table{width:100%;border-collapse:collapse}
+        th,td{padding:10px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.08);font-size:0.9rem}
+        th{background:rgba(15,23,42,0.8);color:#94a3b8}
+        .tag{padding:4px 10px;border-radius:12px;font-size:0.7rem}
+        .tag-vacation{background:rgba(16,185,129,0.2);color:#10b981}
+        .tag-holiday{background:rgba(99,102,241,0.2);color:#6366f1}
+        .tag-work{background:rgba(245,158,11,0.2);color:#f59e0b}
+        .holiday-item{background:rgba(15,23,42,0.6);padding:15px;border-radius:10px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+        .checkbox-item{display:flex;align-items:center;gap:10px;padding:10px;background:rgba(15,23,42,0.5);border-radius:8px;margin-bottom:8px}
+        input[type="checkbox"]{width:18px;height:18px}
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>📅 Mi Calendario Laboral</h1>
-            <p class="subtitle">Control de horas, vacaciones y festivos</p>
+            <p>Control profesional con calendario visual</p>
         </header>
+
         <div class="dashboard">
-            <div class="card"><div class="card-title">Horas Convenio</div><div class="card-value hours-positive" id="horasConvenio">0</div><div class="card-unit">horas restantes</div><div class="card-icon">⏰</div></div>
-            <div class="card"><div class="card-title">Horas Libre</div><div class="card-value" id="horasLibre" style="color: #f59e0b">0</div><div class="card-unit">horas disponibles</div><div class="card-icon">🎯</div></div>
-            <div class="card"><div class="card-title">Días Vacaciones</div><div class="card-value" id="diasVacaciones" style="color: #10b981">0</div><div class="card-unit">días restantes</div><div class="card-icon">🏖️</div></div>
-            <div class="card"><div class="card-title">Próximo Festivo</div><div class="card-value" id="proximoFestivo" style="font-size: 1.4rem; color: #06b6d4">-</div><div class="card-unit" id="diasParaFestivo">-</div><div class="card-icon">🎉</div></div>
-        </div>
-        <div class="section">
-            <h2 class="section-title">Panel</h2>
-            <div class="tabs">
-                <div class="tab active" onclick="cambiarTab('jornadas', this)">📋 Jornadas</div>
-                <div class="tab" onclick="cambiarTab('vacaciones', this)">🏖️ Vacaciones</div>
-                <div class="tab" onclick="cambiarTab('festivos', this)">🎉 Festivos</div>
-                <div class="tab" onclick="cambiarTab('importar', this)">📥 Importar</div>
-                <div class="tab" onclick="cambiarTab('configuracion', this)">⚙️ Configuración</div>
+            <div class="card">
+                <div class="card-title">Horas Convenio</div>
+                <div class="card-value" id="horasConvenio">0</div>
+                <div style="color:#94a3b8;font-size:0.85rem">horas restantes</div>
             </div>
+            <div class="card">
+                <div class="card-title">Días Vacaciones</div>
+                <div class="card-value" id="diasVacaciones" style="color:#10b981">0</div>
+                <div style="color:#94a3b8;font-size:0.85rem">días restantes</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Próximo Festivo</div>
+                <div class="card-value" id="proximoFestivo" style="font-size:1.3rem;color:#06b6d4">-</div>
+                <div id="diasParaFestivo" style="color:#94a3b8;font-size:0.85rem">-</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">📅 Calendario</h2>
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <div class="calendar-nav">
+                        <button onclick="cambiarMes(-1)">◀ Ant</button>
+                        <span class="calendar-month" id="calendarMonth"></span>
+                        <button onclick="cambiarMes(1)">Sig ▶</button>
+                    </div>
+                    <button class="btn" onclick="abrirModal()">➕ Nuevo Registro</button>
+                </div>
+                <div class="calendar-grid" id="calendarGrid"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Panel de Control</h2>
+            <div class="tabs">
+                <div class="tab active" onclick="cambiarTab('jornadas',this)">📋 Jornadas</div>
+                <div class="tab" onclick="cambiarTab('vacaciones',this)">🏖️ Vacaciones</div>
+                <div class="tab" onclick="cambiarTab('festivos',this)">🎉 Festivos</div>
+                <div class="tab" onclick="cambiarTab('config',this)">⚙️ Configuración</div>
+            </div>
+
             <div id="tab-jornadas" class="tab-content active">
                 <form id="formJornada">
                     <div class="form-grid">
-                        <div class="form-group"><label>Fecha *</label><input type="date" id="fecha" required></div>
-                        <div class="form-group"><label>Entrada *</label><input type="time" id="entrada" required></div>
-                        <div class="form-group"><label>Salida *</label><input type="time" id="salida" required></div>
-                        <div class="form-group"><label>Tipo *</label><select id="tipoDia"><option value="laborable">Laborable</option><option value="vacaciones">Vacaciones</option><option value="festivo">Festivo</option><option value="puente">Puente</option></select></div>
+                        <div><label>Fecha *</label><input type="date" id="fecha" required></div>
+                        <div><label>Hora Entrada *</label><input type="time" id="entrada" required></div>
+                        <div><label>Hora Salida *</label><input type="time" id="salida" required></div>
+                        <div><label>Tipo de Día *</label><select id="tipoDia"><option value="laborable">Laborable</option><option value="vacaciones">Vacaciones</option><option value="festivo">Festivo</option></select></div>
                     </div>
-                    <div class="btn-group"><button type="submit" class="btn">✅ Registrar</button></div>
+                    <button type="submit" class="btn">✅ Registrar Jornada</button>
                 </form>
-                <div class="table-container"><table id="tablaJornadas"><thead><tr><th>Fecha</th><th>Entrada</th><th>Salida</th><th>Horas</th><th>Tipo</th><th>Acciones</th></tr></thead><tbody></tbody></table></div>
+                <div class="table-container">
+                    <table id="tablaJornadas"><thead><tr><th>Fecha</th><th>Entrada</th><th>Salida</th><th>Tipo</th><th>Acción</th></tr></thead><tbody></tbody></table>
+                </div>
             </div>
+
             <div id="tab-vacaciones" class="tab-content">
-                <div class="info-box"><h4>📌 Cómo usar</h4><ul><li>Marca periodo de vacaciones</li><li>El sistema calcula días automáticamente</li></ul></div>
                 <form id="formVacaciones">
                     <div class="form-grid">
-                        <div class="form-group"><label>Inicio</label><input type="date" id="vacacionesInicio" required></div>
-                        <div class="form-group"><label>Fin</label><input type="date" id="vacacionesFin" required></div>
-                        <div class="form-group"><label>Nombre</label><input type="text" id="vacacionesNombre" placeholder="Opcional"></div>
+                        <div><label>Fecha Inicio</label><input type="date" id="vacacionesInicio" required></div>
+                        <div><label>Fecha Fin</label><input type="date" id="vacacionesFin" required></div>
+                        <div><label>Nombre (opcional)</label><input type="text" id="vacacionesNombre" placeholder="Ej: Vacaciones verano"></div>
                     </div>
-                    <div class="btn-group"><button type="submit" class="btn btn-accent">🏖️ Añadir</button></div>
+                    <button type="submit" class="btn">🏖️ Añadir Vacaciones</button>
                 </form>
-                <div id="listaVacaciones" class="holiday-list" style="margin-top: 20px;"></div>
+                <div id="listaVacaciones" style="margin-top:20px;"></div>
             </div>
+
             <div id="tab-festivos" class="tab-content">
-                <div class="info-box"><h4>📌 Gestión</h4><ul><li>Selecciona festivos nacionales</li><li>Añade festivos locales</li><li>Importa desde URL o archivo</li></ul></div>
-                <h3 style="margin-bottom: 15px;">🎊 Nacionales (España)</h3>
-                <div id="festivosNacionales" class="checkbox-group"></div>
-                <h3 style="margin: 25px 0 15px;">🏛️ Locales</h3>
-                <form id="formFestivoLocal">
-                    <div class="form-grid">
-                        <div class="form-group"><label>Fecha</label><input type="date" id="festivoLocalFecha" required></div>
-                        <div class="form-group"><label>Nombre</label><input type="text" id="festivoLocalNombre" placeholder="Ej: Fiesta pueblo" required></div>
-                    </div>
-                    <div class="btn-group"><button type="submit" class="btn btn-secondary">➕ Añadir</button></div>
-                </form>
-                <div id="festivosLocalesLista" class="holiday-list" style="margin-top: 20px;"></div>
+                <h3 style="margin-bottom:15px;color:#6366f1">🎊 Festivos Nacionales (España)</h3>
+                <div id="festivosNacionales"></div>
             </div>
-            <div id="tab-importar" class="tab-content">
-                <div class="info-box"><h4>📥 Importar Festivos</h4><ul><li><strong>URL:</strong> Google Calendar, Outlook</li><li><strong>Archivo:</strong> .ics o .json</li><li><strong>Manual:</strong> Pega JSON</li></ul></div>
-                <div class="import-section">
-                    <h3>🔗 Desde URL</h3>
-                    <div class="import-option">
-                        <h4>Calendario iCal</h4>
-                        <p>Pega URL de calendario iCal (.ics)</p>
-                        <div class="url-input-group"><input type="url" id="importUrlIcal" placeholder="https://calendar.google.com/..."><button class="btn btn-accent" onclick="importarDesdeURL('ical')">Importar</button></div>
-                        <p style="margin-top: 10px; font-size: 0.8rem; color: #94a3b8;">💡 Ejemplo: https://calendar.google.com/calendar/ical/es.spanish%23holiday@group.v.calendar.google.com/public/basic.ics</p>
-                    </div>
-                </div>
-                <div class="import-section">
-                    <h3>📁 Desde Archivo</h3>
-                    <div class="import-option">
-                        <h4>Archivo .ics o .json</h4>
-                        <p>Sube archivo con festivos</p>
-                        <input type="file" id="importFile" accept=".ics,.json" style="margin-top: 10px;">
-                    </div>
-                </div>
-                <div class="import-section">
-                    <h3>✍️ Manual (JSON)</h3>
-                    <div class="import-option">
-                        <h4>Pegar JSON</h4>
-                        <p>Formato: [{"fecha": "2025-01-01", "nombre": "Año Nuevo"}]</p>
-                        <textarea id="importManualJson" placeholder='[{"fecha": "2025-01-01", "nombre": "Año Nuevo"}]'></textarea>
-                        <div class="btn-group"><button class="btn btn-accent" onclick="importarManual()">Importar</button><button class="btn btn-secondary" onclick="cargarEjemplo()">Ejemplo</button></div>
-                    </div>
-                </div>
-                <div id="importResult" style="margin-top: 20px;"></div>
-            </div>
-            <div id="tab-configuracion" class="tab-content">
-                <div class="info-box"><h4>⚙️ Configuración</h4><ul><li>Horas anuales de convenio</li><li>Días de vacaciones</li><li>Horas libre disposición</li></ul></div>
+
+            <div id="tab-config" class="tab-content">
                 <form id="formConfig">
                     <div class="form-grid">
-                        <div class="form-group"><label>Horas Convenio Anuales</label><input type="number" id="totalHorasConvenio" value="1776"></div>
-                        <div class="form-group"><label>Días Vacaciones</label><input type="number" id="totalDiasVacaciones" value="22"></div>
-                        <div class="form-group"><label>Horas Libre</label><input type="number" id="horasLibreDisponibilidad" value="0"></div>
+                        <div><label>Total Horas Convenio Anuales</label><input type="number" id="totalHorasConvenio" value="1776" min="0"></div>
+                        <div><label>Total Días Vacaciones Anuales</label><input type="number" id="totalDiasVacaciones" value="22" min="0"></div>
                     </div>
-                    <div class="btn-group"><button type="submit" class="btn">💾 Guardar</button><button type="button" class="btn btn-danger" onclick="borrarTodo()">🗑️ Borrar Todo</button></div>
+                    <button type="submit" class="btn">💾 Guardar Configuración</button>
                 </form>
             </div>
         </div>
     </div>
-    <div class="notifications" id="notifications"></div>
+
+    <div class="modal" id="modalJornada">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 style="color:#f1f5f9">Registrar Jornada</h2>
+                <button class="modal-close" onclick="cerrarModal()">&times;</button>
+            </div>
+            <form id="formJornadaModal">
+                <div class="form-grid">
+                    <div><label>Fecha *</label><input type="date" id="modalFecha" required></div>
+                    <div><label>Hora Entrada *</label><input type="time" id="modalEntrada" required></div>
+                    <div><label>Hora Salida *</label><input type="time" id="modalSalida" required></div>
+                    <div><label>Tipo de Día *</label><select id="modalTipoDia"><option value="laborable">Laborable</option><option value="vacaciones">Vacaciones</option><option value="festivo">Festivo</option></select></div>
+                </div>
+                <div style="display:flex;gap:10px;margin-top:15px">
+                    <button type="submit" class="btn">✅ Guardar</button>
+                    <button type="button" class="btn btn-danger" onclick="cerrarModal()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <button class="fab" onclick="abrirModal()">+</button>
+
     <script>
-        let jornadas = JSON.parse(localStorage.getItem('jornadas')) || [];
-        let vacaciones = JSON.parse(localStorage.getItem('vacaciones')) || [];
-        let festivosLocales = JSON.parse(localStorage.getItem('festivosLocales')) || [];
-        let config = JSON.parse(localStorage.getItem('config')) || { totalHorasConvenio: 1776, totalDiasVacaciones: 22, horasLibreDisponibilidad: 0 };
-        const festivosNacionalesBase = [{fecha:'2025-01-01',nombre:'Año Nuevo'},{fecha:'2025-01-06',nombre:'Reyes'},{fecha:'2025-04-18',nombre:'Viernes Santo'},{fecha:'2025-05-01',nombre:'Día del Trabajador'},{fecha:'2025-08-15',nombre:'Asunción'},{fecha:'2025-10-12',nombre:'Fiesta Nacional'},{fecha:'2025-11-01',nombre:'Todos los Santos'},{fecha:'2025-12-06',nombre:'Constitución'},{fecha:'2025-12-08',nombre:'Inmaculada'},{fecha:'2025-12-25',nombre:'Navidad'},{fecha:'2026-01-01',nombre:'Año Nuevo'},{fecha:'2026-01-06',nombre:'Reyes'},{fecha:'2026-04-03',nombre:'Viernes Santo'},{fecha:'2026-05-01',nombre:'Día del Trabajador'},{fecha:'2026-08-15',nombre:'Asunción'},{fecha:'2026-10-12',nombre:'Fiesta Nacional'},{fecha:'2026-11-01',nombre:'Todos los Santos'},{fecha:'2026-12-06',nombre:'Constitución'},{fecha:'2026-12-08',nombre:'Inmaculada'},{fecha:'2026-12-25',nombre:'Navidad'}];
-        let festivosNacionalesSeleccionados = JSON.parse(localStorage.getItem('festivosNacionalesSeleccionados')) || festivosNacionalesBase.map(f=>f.fecha);
+        let jornadas=JSON.parse(localStorage.getItem('jornadas'))||[];
+        let vacaciones=JSON.parse(localStorage.getItem('vacaciones'))||[];
+        let config=JSON.parse(localStorage.getItem('config'))||{totalHorasConvenio:1776,totalDiasVacaciones:22};
+        const festivosNacionales=[
+            {fecha:'2025-01-01',nombre:'Año Nuevo'},{fecha:'2025-01-06',nombre:'Reyes'},{fecha:'2025-04-18',nombre:'Viernes Santo'},
+            {fecha:'2025-05-01',nombre:'Día del Trabajador'},{fecha:'2025-08-15',nombre:'Asunción'},{fecha:'2025-10-12',nombre:'Fiesta Nacional'},
+            {fecha:'2025-11-01',nombre:'Todos los Santos'},{fecha:'2025-12-06',nombre:'Constitución'},{fecha:'2025-12-08',nombre:'Inmaculada'},{fecha:'2025-12-25',nombre:'Navidad'}
+        ];
+        let fechaActual=new Date();
+
         document.getElementById('totalHorasConvenio').value=config.totalHorasConvenio;
         document.getElementById('totalDiasVacaciones').value=config.totalDiasVacaciones;
-        document.getElementById('horasLibreDisponibilidad').value=config.horasLibreDisponibilidad;
         document.getElementById('fecha').valueAsDate=new Date();
+        document.getElementById('modalFecha').value=new Date().toISOString().split('T')[0];
+
         document.getElementById('formJornada').addEventListener('submit',guardarJornada);
+        document.getElementById('formJornadaModal').addEventListener('submit',guardarJornadaModal);
         document.getElementById('formVacaciones').addEventListener('submit',guardarVacaciones);
-        document.getElementById('formFestivoLocal').addEventListener('submit',guardarFestivoLocal);
         document.getElementById('formConfig').addEventListener('submit',guardarConfig);
-        document.getElementById('importFile').addEventListener('change',importarArchivo);
+
         renderizarTodo();
-        function renderizarTodo(){renderizarDashboard();renderizarTablaJornadas();renderizarVacaciones();renderizarFestivosNacionales();renderizarFestivosLocales();renderizarProximoFestivo();}
-        function renderizarDashboard(){const ht=calcularHorasTrabajadas(),hr=config.totalHorasConvenio-ht,vt=contarDiasVacaciones(),vr=config.totalDiasVacaciones-vt;document.getElementById('horasConvenio').textContent=Math.round(hr);document.getElementById('horasConvenio').className='card-value '+(hr>=0?'hours-positive':'');document.getElementById('horasLibre').textContent=config.horasLibreDisponibilidad;document.getElementById('diasVacaciones').textContent=vr;}
-        function calcularHorasTrabajadas(){return jornadas.reduce((t,j)=>{if(j.tipo==='laborable'){const e=new Date('2000-01-01T'+j.entrada),s=new Date('2000-01-01T'+j.salida);return t+(s-e)/(1000*60*60);}return t;},0);}
-        function contarDiasVacaciones(){const d=new Set();vacaciones.forEach(v=>{const i=new Date(v.inicio),f=new Date(v.fin);for(let x=new Date(i);x<=f;x.setDate(x.getDate()+1))d.add(x.toISOString().split('T')[0]);});return d.size;}
-        function renderizarTablaJornadas(){const tb=document.querySelector('#tablaJornadas tbody');tb.innerHTML='';jornadas.slice().reverse().forEach((j,i)=>{const tr=document.createElement('tr'),h=j.tipo==='laborable'?((new Date('2000-01-01T'+j.salida)-new Date('2000-01-01T'+j.entrada))/(1000*60*60)).toFixed(2):'-';tr.innerHTML='<td>'+formatearFecha(j.fecha)+'</td><td>'+j.entrada+'</td><td>'+j.salida+'</td><td>'+h+'</td><td><span class="tag tag-'+j.tipo+'">'+j.tipo+'</span></td><td><button onclick="eliminarJornada('+(jornadas.length-1-i)+')" style="background:#ef4444;color:white;border:none;padding:5px 10px;border-radius:6px;cursor:pointer">🗑️</button></td>';tb.appendChild(tr);});}
-        function renderizarVacaciones(){const l=document.getElementById('listaVacaciones');l.innerHTML='';vacaciones.forEach((v,i)=>{const d=document.createElement('div');d.className='holiday-item';d.innerHTML='<div><div style="font-weight:600">'+(v.nombre||'Vacaciones')+'</div><div style="color:#94a3b8;font-size:0.85rem">'+formatearFecha(v.inicio)+' - '+formatearFecha(v.fin)+'</div></div><button onclick="eliminarVacaciones('+i+')" style="background:#ef4444;color:white;border:none;padding:5px 10px;border-radius:6px;cursor:pointer">🗑️</button>';l.appendChild(d);});}
-        function renderizarFestivosNacionales(){const c=document.getElementById('festivosNacionales');c.innerHTML='';festivosNacionalesBase.forEach(f=>{const d=document.createElement('label');d.className='checkbox-item';const sel=festivosNacionalesSeleccionados.includes(f.fecha);d.innerHTML='<input type="checkbox" '+(sel?'checked':'')+' onchange="toggleFestivoNacional(\\''+f.fecha+'\\')"><span>'+f.nombre+' ('+formatearFechaSimple(f.fecha)+')</span>';c.appendChild(d);});}
-        function renderizarFestivosLocales(){const l=document.getElementById('festivosLocalesLista');l.innerHTML='';festivosLocales.forEach((f,i)=>{const d=document.createElement('div');d.className='holiday-item';d.innerHTML='<div><div style="font-weight:600">'+f.nombre+'</div><div style="color:#94a3b8;font-size:0.85rem">'+formatearFecha(f.fecha)+'</div></div><button onclick="eliminarFestivoLocal('+i+')" style="background:#ef4444;color:white;border:none;padding:5px 10px;border-radius:6px;cursor:pointer">🗑️</button>';l.appendChild(d);});}
-        function renderizarProximoFestivo(){const hoy=new Date();hoy.setHours(0,0,0,0);let pf=null,dp=Infinity;const tf=[...festivosNacionalesBase.filter(f=>festivosNacionalesSeleccionados.includes(f.fecha)),...festivosLocales];tf.forEach(f=>{const ff=new Date(f.fecha);ff.setHours(0,0,0,0);if(ff>=hoy){const dd=Math.floor((ff-hoy)/(1000*60*60*24));if(dd<dp){dp=dd;pf=f;}}});if(pf){document.getElementById('proximoFestivo').textContent=pf.nombre||'Festivo';document.getElementById('diasParaFestivo').textContent=dp===0?'¡Hoy!':dp===1?'Mañana':'En '+dp+' días';}}
-        function guardarJornada(e){e.preventDefault();const j={fecha:document.getElementById('fecha').value,entrada:document.getElementById('entrada').value,salida:document.getElementById('salida').value,tipo:document.getElementById('tipoDia').value};jornadas.push(j);localStorage.setItem('jornadas',JSON.stringify(jornadas));mostrarNotificacion('Jornada registrada','success');renderizarTodo();e.target.reset();document.getElementById('fecha').valueAsDate=new Date();}
-        function guardarVacaciones(e){e.preventDefault();const v={inicio:document.getElementById('vacacionesInicio').value,fin:document.getElementById('vacacionesFin').value,nombre:document.getElementById('vacacionesNombre').value};vacaciones.push(v);localStorage.setItem('vacaciones',JSON.stringify(vacaciones));mostrarNotificacion('Vacaciones añadidas','success');renderizarTodo();e.target.reset();}
-        function guardarFestivoLocal(e){e.preventDefault();const f={fecha:document.getElementById('festivoLocalFecha').value,nombre:document.getElementById('festivoLocalNombre').value};festivosLocales.push(f);localStorage.setItem('festivosLocales',JSON.stringify(festivosLocales));mostrarNotificacion('Festivo añadido','success');renderizarTodo();e.target.reset();}
-        function guardarConfig(e){e.preventDefault();config={totalHorasConvenio:parseInt(document.getElementById('totalHorasConvenio').value),totalDiasVacaciones:parseInt(document.getElementById('totalDiasVacaciones').value),horasLibreDisponibilidad:parseInt(document.getElementById('horasLibreDisponibilidad').value)};localStorage.setItem('config',JSON.stringify(config));mostrarNotificacion('Configuración guardada','success');renderizarTodo();}
-        function toggleFestivoNacional(f){if(festivosNacionalesSeleccionados.includes(f)){festivosNacionalesSeleccionados=festivosNacionalesSeleccionados.filter(x=>x!==f);}else{festivosNacionalesSeleccionados.push(f);}localStorage.setItem('festivosNacionalesSeleccionados',JSON.stringify(festivosNacionalesSeleccionados));renderizarProximoFestivo();}
-        function eliminarJornada(i){if(confirm('¿Eliminar?')){jornadas.splice(i,1);localStorage.setItem('jornadas',JSON.stringify(jornadas));renderizarTodo();}}
-        function eliminarVacaciones(i){if(confirm('¿Eliminar?')){vacaciones.splice(i,1);localStorage.setItem('vacaciones',JSON.stringify(vacaciones));renderizarTodo();}}
-        function eliminarFestivoLocal(i){if(confirm('¿Eliminar?')){festivosLocales.splice(i,1);localStorage.setItem('festivosLocales',JSON.stringify(festivosLocales));renderizarTodo();}}
-        function borrarTodo(){if(confirm('⚠️ ¿BORRAR TODO?')){localStorage.clear();jornadas=[];vacaciones=[];festivosLocales=[];config={totalHorasConvenio:1776,totalDiasVacaciones:22,horasLibreDisponibilidad:0};festivosNacionalesSeleccionados=festivosNacionalesBase.map(f=>f.fecha);renderizarTodo();mostrarNotificacion('Todo borrado','danger');}}
-        async function importarDesdeURL(tipo){const ui=document.getElementById('importUrlIcal'),url=ui.value.trim();if(!url){mostrarNotificacion('URL requerida','warning');return;}const rd=document.getElementById('importResult');rd.innerHTML='<div class="info-box">Importando...</div>';try{const r=await fetch(url);if(!r.ok)throw new Error('Error al descargar');const tx=await r.text();let fi=[];if(tipo==='ical'||url.endsWith('.ics')){fi=parsearICS(tx);}else{fi=JSON.parse(tx);}if(fi.length===0)throw new Error('No hay festivos');fi.forEach(f=>{if(f.fecha&&f.nombre&&!festivosLocales.some(fl=>fl.fecha===f.fecha)){festivosLocales.push({fecha:f.fecha,nombre:f.nombre});}});localStorage.setItem('festivosLocales',JSON.stringify(festivosLocales));renderizarTodo();rd.innerHTML='<div class="info-box" style="border-left-color:#10b981"><h4>✅ ¡Listo!</h4><p>'+fi.length+' festivos importados</p></div>';mostrarNotificacion(fi.length+' festivos importados','success');}catch(er){rd.innerHTML='<div class="info-box" style="border-left-color:#ef4444"><h4>❌ Error</h4><p>'+er.message+'</p></div>';mostrarNotificacion('Error','danger');}}
-        function importarArchivo(e){const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=function(ev){try{const tx=ev.target.result;let fi=[];if(f.name.toLowerCase().endsWith('.ics')){fi=parsearICS(tx);}else{fi=JSON.parse(tx);}if(fi.length===0)throw new Error('No hay festivos');fi.forEach(x=>{if(x.fecha&&x.nombre&&!festivosLocales.some(fl=>fl.fecha===x.fecha)){festivosLocales.push({fecha:x.fecha,nombre:x.nombre});}});localStorage.setItem('festivosLocales',JSON.stringify(festivosLocales));renderizarTodo();document.getElementById('importResult').innerHTML='<div class="info-box" style="border-left-color:#10b981"><h4>✅ ¡Listo!</h4><p>'+fi.length+' festivos importados</p></div>';mostrarNotificacion(fi.length+' festivos importados','success');}catch(er){document.getElementById('importResult').innerHTML='<div class="info-box" style="border-left-color:#ef4444"><h4>❌ Error</h4><p>'+er.message+'</p></div>';mostrarNotificacion('Error','danger');}};rd.readAsText(f);e.target.value='';}
-        function importarManual(){const tx=document.getElementById('importManualJson').value.trim();if(!tx){mostrarNotificacion('JSON requerido','warning');return;}try{const fi=JSON.parse(tx);if(!Array.isArray(fi))throw new Error('Debe ser array');let c=0;fi.forEach(f=>{if(f.fecha&&f.nombre&&!festivosLocales.some(fl=>fl.fecha===f.fecha)){festivosLocales.push({fecha:f.fecha,nombre:f.nombre});c++;}});if(c===0)throw new Error('No se añadieron');localStorage.setItem('festivosLocales',JSON.stringify(festivosLocales));renderizarTodo();document.getElementById('importResult').innerHTML='<div class="info-box" style="border-left-color:#10b981"><h4>✅ ¡Listo!</h4><p>'+c+' festivos importados</p></div>';mostrarNotificacion(c+' festivos importados','success');document.getElementById('importManualJson').value='';}catch(er){document.getElementById('importResult').innerHTML='<div class="info-box" style="border-left-color:#ef4444"><h4>❌ Error</h4><p>'+er.message+'</p></div>';mostrarNotificacion('Error','danger');}}
-        function cargarEjemplo(){document.getElementById('importManualJson').value='[{"fecha":"2025-01-01","nombre":"Año Nuevo"},{"fecha":"2025-01-06","nombre":"Reyes"},{"fecha":"2025-04-18","nombre":"Viernes Santo"},{"fecha":"2025-05-01","nombre":"Día del Trabajador"},{"fecha":"2025-08-15","nombre":"Asunción"},{"fecha":"2025-10-12","nombre":"Fiesta Nacional"},{"fecha":"2025-11-01","nombre":"Todos los Santos"},{"fecha":"2025-12-06","nombre":"Constitución"},{"fecha":"2025-12-08","nombre":"Inmaculada"},{"fecha":"2025-12-25","nombre":"Navidad"}]';}
-        function parsearICS(tx){const fs=[],lns=tx.split('
-').join('
-').split('
-').join('
-').split('
-');let ea=null;for(let i=0;i<lns.length;i++){const ln=lns[i];if(ln.startsWith('BEGIN:VEVENT')){ea={fecha:null,nombre:'Evento'};}else if(ln.startsWith('END:VEVENT')&&ea){if(ea.fecha)fs.push(ea);ea=null;}else if(ea){if(ln.startsWith('DTSTART;VALUE=DATE:')){ea.fecha=ln.split(':')[1];}else if(ln.startsWith('DTSTART:')){ea.fecha=ln.split(':')[1].substring(0,8);}else if(ln.startsWith('SUMMARY:')){ea.nombre=ln.split(':')[1];}}return fs;}
-        function formatearFecha(fs){const f=new Date(fs+'T00:00:00');return f.toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric'});}
-        function formatearFechaSimple(fs){const f=new Date(fs+'T00:00:00');return f.toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit'});}
-        function cambiarTab(tn,te){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));if(te)te.classList.add('active');else event.target.classList.add('active');document.getElementById('tab-'+tn).classList.add('active');}
-        function mostrarNotificacion(msg,tipo){const c=document.getElementById('notifications'),n=document.createElement('div');n.className='notification '+tipo;n.textContent=msg;c.appendChild(n);setTimeout(()=>n.remove(),4000);}
+        renderizarCalendario();
+
+        function renderizarTodo(){
+            renderizarDashboard();
+            renderizarTabla();
+            renderizarVacacionesLista();
+            renderizarFestivos();
+            renderizarProximoFestivo();
+        }
+
+        function renderizarDashboard(){
+            const horasTrabajadas=jornadas.filter(j=>j.tipo==='laborable').reduce((t,j)=>{
+                const e=new Date('2000-01-01T'+j.entrada);
+                const s=new Date('2000-01-01T'+j.salida);
+                return t+(s-e)/(1000*60*60);
+            },0);
+            document.getElementById('horasConvenio').textContent=Math.round(config.totalHorasConvenio-horasTrabajadas);
+            const diasVacaciones=vacaciones.reduce((t,v)=>{
+                const i=new Date(v.inicio);
+                const f=new Date(v.fin);
+                return t+Math.floor((f-i)/(1000*60*60*24))+1;
+            },0);
+            document.getElementById('diasVacaciones').textContent=config.totalDiasVacaciones-diasVacaciones;
+        }
+
+        function renderizarCalendario(){
+            const grid=document.getElementById('calendarGrid');
+            grid.innerHTML='';
+            const meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+            document.getElementById('calendarMonth').textContent=meses[fechaActual.getMonth()]+' '+fechaActual.getFullYear();
+            ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'].forEach(d=>{
+                const h=document.createElement('div');
+                h.className='calendar-day-header';
+                h.textContent=d;
+                grid.appendChild(h);
+            });
+            const primerDia=new Date(fechaActual.getFullYear(),fechaActual.getMonth(),1);
+            const ultimoDia=new Date(fechaActual.getFullYear(),fechaActual.getMonth()+1,0);
+            for(let i=0;i<primerDia.getDay();i++){
+                const d=document.createElement('div');
+                d.className='calendar-day';
+                d.style.opacity='0.3';
+                grid.appendChild(d);
+            }
+            const hoy=new Date().toISOString().split('T')[0];
+            for(let dia=1;dia<=ultimoDia.getDate();dia++){
+                const fechaStr=fechaActual.getFullYear()+'-'+String(fechaActual.getMonth()+1).padStart(2,'0')+'-'+String(dia).padStart(2,'0');
+                const d=document.createElement('div');
+                d.className='calendar-day';
+                if(fechaStr===hoy)d.classList.add('today');
+                const jornada=jornadas.find(j=>j.fecha===fechaStr);
+                if(jornada)d.classList.add(jornada.tipo);
+                const vacacionesPeriodo=vacaciones.find(v=>new Date(fechaStr)>=new Date(v.inicio)&&new Date(fechaStr)<=new Date(v.fin));
+                if(vacacionesPeriodo)d.classList.add('vacation');
+                d.innerHTML='<div class="calendar-day-number">'+dia+'</div>';
+                d.onclick=()=>{document.getElementById('modalFecha').value=fechaStr;abrirModal();};
+                grid.appendChild(d);
+            }
+        }
+
+        function cambiarMes(delta){
+            fechaActual.setMonth(fechaActual.getMonth()+delta);
+            renderizarCalendario();
+        }
+
+        function renderizarTabla(){
+            const tbody=document.querySelector('#tablaJornadas tbody');
+            tbody.innerHTML='';
+            jornadas.slice().reverse().forEach((j,i)=>{
+                const tr=document.createElement('tr');
+                tr.innerHTML='<td>'+j.fecha+'</td><td>'+j.entrada+'</td><td>'+j.salida+'</td><td><span class="tag tag-'+j.tipo+'">'+j.tipo+'</span></td><td><button class="btn btn-danger" onclick="eliminarJornada('+(jornadas.length-1-i)+')">X</button></td>';
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderizarVacacionesLista(){
+            const lista=document.getElementById('listaVacaciones');
+            lista.innerHTML='';
+            vacaciones.forEach((v,i)=>{
+                const d=document.createElement('div');
+                d.className='holiday-item';
+                d.innerHTML='<div><strong>'+(v.nombre||'Vacaciones')+'</strong><br><span style="color:#94a3b8;font-size:0.85rem">'+v.inicio+' - '+v.fin+'</span></div><button class="btn btn-danger" onclick="eliminarVacaciones('+i+')">X</button>';
+                lista.appendChild(d);
+            });
+        }
+
+        function renderizarFestivos(){
+            const container=document.getElementById('festivosNacionales');
+            container.innerHTML='';
+            festivosNacionales.forEach(f=>{
+                const d=document.createElement('div');
+                d.className='checkbox-item';
+                d.innerHTML='<span>🎉</span><span><strong>'+f.nombre+'</strong><br><span style="color:#94a3b8;font-size:0.85rem">'+f.fecha+'</span></span>';
+                container.appendChild(d);
+            });
+        }
+
+        function renderizarProximoFestivo(){
+            const hoy=new Date();
+            hoy.setHours(0,0,0,0);
+            let proximo=null;
+            let diasPara=Infinity;
+            festivosNacionales.forEach(f=>{
+                const fechaFestivo=new Date(f.fecha);
+                fechaFestivo.setHours(0,0,0,0);
+                if(fechaFestivo>=hoy){
+                    const diffDias=Math.floor((fechaFestivo-hoy)/(1000*60*60*24));
+                    if(diffDias<diasPara){diasPara=diffDias;proximo=f;}
+                }
+            });
+            if(proximo){
+                document.getElementById('proximoFestivo').textContent=proximo.nombre;
+                document.getElementById('diasParaFestivo').textContent=diasPara===0?'¡Hoy!':diasPara===1?'Mañana':'En '+diasPara+' días';
+            }
+        }
+
+        function guardarJornada(e){
+            e.preventDefault();
+            jornadas.push({
+                fecha:document.getElementById('fecha').value,
+                entrada:document.getElementById('entrada').value,
+                salida:document.getElementById('salida').value,
+                tipo:document.getElementById('tipoDia').value
+            });
+            localStorage.setItem('jornadas',JSON.stringify(jornadas));
+            renderizarTodo();
+            renderizarCalendario();
+            e.target.reset();
+            document.getElementById('fecha').valueAsDate=new Date();
+        }
+
+        function guardarJornadaModal(e){
+            e.preventDefault();
+            jornadas.push({
+                fecha:document.getElementById('modalFecha').value,
+                entrada:document.getElementById('modalEntrada').value,
+                salida:document.getElementById('modalSalida').value,
+                tipo:document.getElementById('modalTipoDia').value
+            });
+            localStorage.setItem('jornadas',JSON.stringify(jornadas));
+            renderizarTodo();
+            renderizarCalendario();
+            cerrarModal();
+        }
+
+        function guardarVacaciones(e){
+            e.preventDefault();
+            vacaciones.push({
+                inicio:document.getElementById('vacacionesInicio').value,
+                fin:document.getElementById('vacacionesFin').value,
+                nombre:document.getElementById('vacacionesNombre').value
+            });
+            localStorage.setItem('vacaciones',JSON.stringify(vacaciones));
+            renderizarTodo();
+            renderizarCalendario();
+            e.target.reset();
+        }
+
+        function guardarConfig(e){
+            e.preventDefault();
+            config={
+                totalHorasConvenio:parseInt(document.getElementById('totalHorasConvenio').value),
+                totalDiasVacaciones:parseInt(document.getElementById('totalDiasVacaciones').value)
+            };
+            localStorage.setItem('config',JSON.stringify(config));
+            renderizarTodo();
+        }
+
+        function eliminarJornada(i){jornadas.splice(i,1);localStorage.setItem('jornadas',JSON.stringify(jornadas));renderizarTodo();renderizarCalendario();}
+        function eliminarVacaciones(i){vacaciones.splice(i,1);localStorage.setItem('vacaciones',JSON.stringify(vacaciones));renderizarTodo();renderizarCalendario();}
+
+        function cambiarTab(tab,el){
+            document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('tab-'+tab).classList.add('active');
+        }
+
+        function abrirModal(){document.getElementById('modalJornada').classList.add('show');}
+        function cerrarModal(){document.getElementById('modalJornada').classList.remove('show');}
     </script>
 </body>
 </html>
