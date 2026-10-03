@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Control Laboral Fold</title>
+    <meta name="theme-color" content="#0f172a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Manifest inline para instalación nativa -->
+    <link rel="manifest" href='data:application/manifest+json,{"name":"Control Laboral","short_name":"LaboralFold","start_url":".","display":"standalone","background_color":"#0f172a","theme_color":"#0f172a","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/3652/3652191.png","sizes":"512x512","type":"image/png"}]}'>
+
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Pantalla Plegable Ancha (Z Fold 8 Abierto) */
+        @media (min-width: 600px) {
+            .fold-layout {
+                display: grid;
+                grid-template-columns: 350px 1fr;
+                gap: 1.5rem;
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+            .fold-sidebar {
+                position: sticky;
+                top: 1rem;
+                height: calc(100vh - 2rem);
+            }
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+
+        .day-card {
+            aspect-ratio: 1;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #1e293b;
+        }
+
+        .day-card:active { transform: scale(0.92); }
+
+        .type-vacaciones { background: #0284c7 !important; color: #fff; }
+        .type-libre { background: #059669 !important; color: #fff; }
+        .type-festivo { background: #dc2626 !important; color: #fff; }
+        .type-convenio { background: #d97706 !important; color: #fff; }
+        .type-fines { background: #334155; opacity: 0.6; }
+        .is-today { border: 2px solid #38bdf8; }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-6 min-h-screen">
+
+    <header class="flex justify-between items-center mb-6 max-w-[1400px] mx-auto">
+        <div class="flex items-center gap-3">
+            <div class="p-2.5 bg-sky-500/10 text-sky-400 rounded-2xl border border-sky-500/20">
+                <i data-lucide="calendar-range" class="w-7 h-7"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">Control Laboral</h1>
+                <p class="text-xs text-slate-400">Diseño Adaptativo Z Fold 8</p>
+            </div>
+        </div>
+        <button onclick="solicitarNotificaciones()" class="p-2.5 bg-slate-800 text-amber-400 rounded-xl border border-slate-700 flex items-center gap-2 text-xs font-semibold">
+            <i data-lucide="bell" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">Alertas</span>
+        </button>
+    </header>
+
+    <main class="fold-layout">
+
+        <!-- PANEL IZQUIERDO -->
+        <aside class="fold-sidebar flex flex-col gap-4 overflow-y-auto pr-1">
+            <div class="glass-panel p-5">
+                <h2 class="text-sm font-semibold text-slate-400 mb-4 flex items-center gap-2">
+                    <i data-lucide="clock" class="w-4 h-4 text-sky-400"></i> Saldos Restantes
+                </h2>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700/50">
+                        <span class="text-xs text-slate-400 block">Vacaciones</span>
+                        <div class="text-2xl font-black text-sky-400 mt-1" id="stat-vacaciones">0d</div>
+                        <span class="text-[10px] text-slate-500">Pendientes</span>
+                    </div>
+                    <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700/50">
+                        <span class="text-xs text-slate-400 block">Libre Disp.</span>
+                        <div class="text-2xl font-black text-emerald-400 mt-1" id="stat-libre">0h</div>
+                        <span class="text-[10px] text-slate-500">Asuntos propios</span>
+                    </div>
+                    <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700/50 col-span-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-slate-400">Dif. Convenio</span>
+                            <span class="text-xs font-bold text-amber-400" id="stat-convenio">0h</span>
+                        </div>
+                        <div class="w-full bg-slate-700/50 h-2 rounded-full mt-2 overflow-hidden">
+                            <div id="bar-convenio" class="bg-amber-400 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel p-4">
+                <details class="group">
+                    <summary class="flex justify-between items-center font-medium cursor-pointer text-xs text-slate-300">
+                        <span>Configurar Totales Anuales</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <div class="mt-4 space-y-3 text-xs">
+                        <div>
+                            <label class="block text-slate-400 mb-1">Días Vacaciones Año:</label>
+                            <input type="number" id="input-total-vacaciones" value="30" onchange="guardarTotalesConfig()" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1">Horas Libre Disposición Año:</label>
+                            <input type="number" id="input-total-libre" value="48" onchange="guardarTotalesConfig()" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1">Horas Objetivas Convenio:</label>
+                            <input type="number" id="input-total-convenio" value="80" onchange="guardarTotalesConfig()" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white">
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <div class="glass-panel p-4 bg-gradient-to-br from-amber-500/10 to-transparent border-amber-500/20">
+                <div class="flex items-start gap-3">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-amber-400 shrink-0 mt-0.5"></i>
+                    <div>
+                        <h4 class="text-xs font-bold text-amber-300">Detector de Puentes</h4>
+                        <p class="text-[11px] text-slate-400 mt-1" id="puentes-detector-text">Selecciona festivos para detectar oportunidades.</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- PANEL DERECHO / CALENDARIO -->
+        <section class="glass-panel p-5 flex flex-col justify-between">
+            <div>
+                <div class="flex justify-between items-center mb-6">
+                    <button onclick="cambiarMes(-1)" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-700"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+                    <h2 class="text-lg font-bold text-white capitalize" id="calendar-month-year">Mes</h2>
+                    <button onclick="cambiarMes(1)" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-700"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
+                </div>
+
+                <div class="grid grid-cols-7 text-center font-bold text-xs text-slate-400 mb-2">
+                    <div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div class="text-amber-500">Sáb</div><div class="text-amber-500">Dom</div>
+                </div>
+
+                <div class="calendar-grid" id="calendar-days"></div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-800">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-semibold text-slate-400" id="selected-date-title">Selecciona un día</span>
+                    <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full" id="selected-date-status">-</span>
+                </div>
+                <div class="flex gap-2 overflow-x-auto pb-1">
+                    <button onclick="marcarDia('vacaciones')" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-medium whitespace-nowrap">Vacaciones</button>
+                    <button onclick="marcarDia('libre')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-medium whitespace-nowrap">Libre Disp.</button>
+                    <button onclick="marcarDia('convenio')" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-medium whitespace-nowrap">Dif. Convenio</button>
+                    <button onclick="marcarDia('festivo')" class="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded-lg text-xs font-medium whitespace-nowrap">Festivo</button>
+                    <button onclick="marcarDia('limpiar')" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-xs font-medium whitespace-nowrap">Limpiar</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        let fechaActual = new Date();
+        let diaSeleccionadoKey = null;
+
+        let appData = JSON.parse(localStorage.getItem('laboral_data')) || {
+            totales: { vacaciones: 30, libre: 48, convenio: 80 },
+            registros: {}
+        };
+
+        const mesesNombres = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+
+        function init() {
+            lucide.createIcons();
+            document.getElementById('input-total-vacaciones').value = appData.totales.vacaciones;
+            document.getElementById('input-total-libre').value = appData.totales.libre;
+            document.getElementById('input-total-convenio').value = appData.totales.convenio;
+            renderizarCalendario();
+            actualizarEstadisticas();
+            detectarPuentes();
+        }
+
+        function guardarTotalesConfig() {
+            appData.totales.vacaciones = parseInt(document.getElementById('input-total-vacaciones').value) || 0;
+            appData.totales.libre = parseInt(document.getElementById('input-total-libre').value) || 0;
+            appData.totales.convenio = parseInt(document.getElementById('input-total-convenio').value) || 0;
+            guardarState();
+        }
+
+        function guardarState() {
+            localStorage.setItem('laboral_data', JSON.stringify(appData));
+            actualizarEstadisticas();
+            detectarPuentes();
+        }
+
+        function cambiarMes(delta) {
+            fechaActual.setMonth(fechaActual.getMonth() + delta);
+            renderizarCalendario();
+        }
+
+        function renderizarCalendario() {
+            const year = fechaActual.getFullYear();
+            const month = fechaActual.getMonth();
+            document.getElementById('calendar-month-year').innerText = `${mesesNombres[month]} ${year}`;
+
+            const container = document.getElementById('calendar-days');
+            container.innerHTML = '';
+
+            const primerDia = new Date(year, month, 1);
+            const ultimoDia = new Date(year, month + 1, 0);
+
+            let startingDay = primerDia.getDay() - 1;
+            if (startingDay === -1) startingDay = 6;
+
+            for (let i = 0; i < startingDay; i++) {
+                const empty = document.createElement('div');
+                empty.className = 'day-card opacity-20 pointer-events-none';
+                container.appendChild(empty);
+            }
+
+            const hoy = new Date();
+
+            for (let day = 1; day <= ultimoDia.getDate(); day++) {
+                const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const fechaLoop = new Date(year, month, day);
+                const dayOfWeek = fechaLoop.getDay();
+
+                const dayCard = document.createElement('div');
+                let classList = ['day-card'];
+
+                if (dayOfWeek === 0 || dayOfWeek === 6) classList.push('type-fines');
+                if (appData.registros[dateKey]) classList.push(`type-${appData.registros[dateKey]}`);
+                if (hoy.getFullYear() === year && hoy.getMonth() === month && hoy.getDate() === day) classList.push('is-today');
+
+                dayCard.className = classList.join(' ');
+                dayCard.innerText = day;
+                dayCard.onclick = () => {
+                    diaSeleccionadoKey = dateKey;
+                    document.getElementById('selected-date-title').innerText = `Día: ${dateKey}`;
+                    document.getElementById('selected-date-status').innerText = (appData.registros[dateKey] || 'Laborable').toUpperCase();
+                };
+
+                container.appendChild(dayCard);
+            }
+        }
+
+        function marcarDia(tipo) {
+            if (!diaSeleccionadoKey) return;
+            if (tipo === 'limpiar') {
+                delete appData.registros[diaSeleccionadoKey];
+            } else {
+                appData.registros[diaSeleccionadoKey] = tipo;
+            }
+            guardarState();
+            renderizarCalendario();
+            document.getElementById('selected-date-status').innerText = tipo === 'limpiar' ? 'LABORABLE' : tipo.toUpperCase();
+        }
+
+        function actualizarEstadisticas() {
+            let vacUsadas = 0, libreUsadas = 0, convenioUsadas = 0;
+            Object.values(appData.registros).forEach(tipo => {
+                if (tipo === 'vacaciones') vacUsadas += 1;
+                if (tipo === 'libre') libreUsadas += 8;
+                if (tipo === 'convenio') convenioUsadas += 8;
+            });
+
+            document.getElementById('stat-vacaciones').innerText = `${Math.max(0, appData.totales.vacaciones - vacUsadas)}d`;
+            document.getElementById('stat-libre').innerText = `${Math.max(0, appData.totales.libre - libreUsadas)}h`;
+            document.getElementById('stat-convenio').innerText = `${Math.max(0, appData.totales.convenio - convenioUsadas)}h`;
+
+            const pct = Math.min(100, (convenioUsadas / (appData.totales.convenio || 1)) * 100);
+            document.getElementById('bar-convenio').style.width = `${pct}%`;
+        }
+
+        function detectarPuentes() {
+            const festivos = Object.keys(appData.registros).filter(k => appData.registros[k] === 'festivo');
+            let msg = "No hay festivos próximos detectados para puente.";
+            for (let f of festivos) {
+                const day = new Date(f).getDay();
+                if (day === 2) { msg = `¡Puente potencial! El ${f} cae en Martes. Solicita el Lunes.`; break; }
+                if (day === 4) { msg = `¡Puente potencial! El ${f} cae en Jueves. Solicita el Viernes.`; break; }
+            }
+            document.getElementById('puentes-detector-text').innerText = msg;
+        }
+
+        function solicitarNotificaciones() {
+            if ("Notification" in window) {
+                Notification.requestPermission().then(p => {
+                    if (p === "granted") new Notification("Control Laboral", { body: "Notificaciones activadas correctamente." });
+                });
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
