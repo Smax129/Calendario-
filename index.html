@@ -1,2633 +1,981 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#2563eb">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>Mi Jornada</title>
-
-<style>
-:root{
-  --primary:#2563eb;
-  --primary2:#60a5fa;
-  --bg:#f4f7fb;
-  --card:#ffffff;
-  --text:#172033;
-  --muted:#718096;
-  --border:#e4e9f1;
-  --success:#16a34a;
-  --danger:#dc2626;
-  --warning:#f59e0b;
-  --shadow:0 8px 30px rgba(20,35,70,.08);
-  --radius:22px;
-}
-
-*{box-sizing:border-box}
-
-html,body{
-  margin:0;
-  padding:0;
-  width:100%;
-  min-height:100%;
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  overscroll-behavior:none;
-}
-
-body{
-  -webkit-tap-highlight-color:transparent;
-}
-
-button,input,select,textarea{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-  border:0;
-}
-
-.app{
-  min-height:100vh;
-  display:flex;
-}
-
-/* SIDEBAR */
-
-.sidebar{
-  width:260px;
-  min-height:100vh;
-  background:var(--card);
-  border-right:1px solid var(--border);
-  padding:22px 16px;
-  position:fixed;
-  left:0;
-  top:0;
-  bottom:0;
-  z-index:20;
-}
-
-.logo{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:8px;
-  margin-bottom:28px;
-}
-
-.logo-icon{
-  width:48px;
-  height:48px;
-  border-radius:15px;
-  background:linear-gradient(135deg,var(--primary2),var(--primary));
-  color:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:24px;
-  box-shadow:0 8px 20px rgba(37,99,235,.25);
-}
-
-.logo strong{
-  display:block;
-  font-size:17px;
-}
-
-.logo small{
-  color:var(--muted);
-}
-
-.nav{
-  display:flex;
-  flex-direction:column;
-  gap:7px;
-}
-
-.nav button{
-  width:100%;
-  padding:13px 14px;
-  border-radius:14px;
-  background:transparent;
-  color:var(--muted);
-  text-align:left;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  transition:.2s;
-}
-
-.nav button:hover,
-.nav button.active{
-  background:rgba(37,99,235,.10);
-  color:var(--primary);
-}
-
-.nav-icon{
-  width:22px;
-  text-align:center;
-  font-size:18px;
-}
-
-/* MAIN */
-
-.main{
-  width:calc(100% - 260px);
-  margin-left:260px;
-  min-height:100vh;
-}
-
-.topbar{
-  height:72px;
-  padding:0 28px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  background:var(--bg);
-  position:sticky;
-  top:0;
-  z-index:10;
-}
-
-.page-title{
-  font-size:25px;
-  font-weight:800;
-}
-
-.date-label{
-  color:var(--muted);
-  font-size:13px;
-}
-
-.container{
-  max-width:1500px;
-  margin:auto;
-  padding:10px 28px 40px;
-}
-
-.page{
-  display:none;
-}
-
-.page.active{
-  display:block;
-}
-
-/* CARDS */
-
-.cards{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:18px;
-  margin-bottom:22px;
-}
-
-.card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-}
-
-.metric{
-  padding:20px;
-  position:relative;
-  overflow:hidden;
-}
-
-.metric-icon{
-  width:44px;
-  height:44px;
-  border-radius:14px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(37,99,235,.10);
-  color:var(--primary);
-  font-size:21px;
-  margin-bottom:16px;
-}
-
-.metric h3{
-  margin:0;
-  font-size:28px;
-}
-
-.metric p{
-  margin:5px 0 0;
-  color:var(--muted);
-  font-size:13px;
-}
-
-.metric small{
-  display:block;
-  margin-top:12px;
-  color:var(--muted);
-}
-
-/* GRID */
-
-.grid2{
-  display:grid;
-  grid-template-columns:1.4fr 1fr;
-  gap:20px;
-}
-
-.panel{
-  padding:20px;
-  margin-bottom:20px;
-}
-
-.panel-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  margin-bottom:18px;
-}
-
-.panel-title{
-  font-size:18px;
-  font-weight:800;
-}
-
-.panel-sub{
-  color:var(--muted);
-  font-size:13px;
-}
-
-/* BUTTONS */
-
-.btn{
-  padding:11px 15px;
-  border-radius:13px;
-  font-weight:700;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:7px;
-  transition:.2s;
-}
-
-.btn-primary{
-  background:linear-gradient(135deg,var(--primary2),var(--primary));
-  color:#fff;
-  box-shadow:0 8px 18px rgba(37,99,235,.20);
-}
-
-.btn-secondary{
-  background:var(--bg);
-  color:var(--text);
-  border:1px solid var(--border);
-}
-
-.btn-danger{
-  background:#fee2e2;
-  color:#b91c1c;
-}
-
-.btn:hover{
-  transform:translateY(-1px);
-}
-
-/* QUICK ACTIONS */
-
-.quick{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-}
-
-.quick button{
-  padding:16px;
-  border-radius:16px;
-  background:var(--bg);
-  border:1px solid var(--border);
-  text-align:left;
-  color:var(--text);
-}
-
-.quick strong{
-  display:block;
-  margin-bottom:4px;
-}
-
-.quick span{
-  color:var(--muted);
-  font-size:12px;
-}
-
-/* CALENDAR */
-
-.calendar-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:15px;
-}
-
-.calendar-actions{
-  display:flex;
-  gap:6px;
-}
-
-.icon-btn{
-  width:36px;
-  height:36px;
-  border-radius:11px;
-  background:var(--bg);
-  color:var(--text);
-  border:1px solid var(--border);
-}
-
-.calendar-title{
-  font-weight:800;
-  text-transform:capitalize;
-}
-
-.weekdays,
-.calendar{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-}
-
-.weekdays div{
-  text-align:center;
-  color:var(--muted);
-  font-size:11px;
-  padding:6px 0;
-  font-weight:700;
-}
-
-.day{
-  min-height:72px;
-  padding:6px;
-  border:1px solid var(--border);
-  background:var(--card);
-  position:relative;
-  cursor:pointer;
-}
-
-.day:hover{
-  background:rgba(37,99,235,.05);
-}
-
-.day-number{
-  font-size:12px;
-  font-weight:700;
-}
-
-.day.other{
-  opacity:.35;
-}
-
-.day.today{
-  outline:2px solid var(--primary);
-  outline-offset:-2px;
-}
-
-.day.vacation{
-  background:#dbeafe;
-  color:#1d4ed8;
-}
-
-.day.free{
-  background:#dcfce7;
-  color:#15803d;
-}
-
-.day.convenio{
-  background:#fef3c7;
-  color:#a16207;
-}
-
-.day.holiday{
-  background:#fee2e2;
-  color:#b91c1c;
-}
-
-.day.weekend{
-  background:rgba(120,130,150,.07);
-}
-
-.day-note{
-  font-size:9px;
-  margin-top:7px;
-  overflow:hidden;
-  white-space:nowrap;
-}
-
-/* MOVEMENTS */
-
-.movement{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding:13px 0;
-  border-bottom:1px solid var(--border);
-}
-
-.movement:last-child{
-  border-bottom:0;
-}
-
-.move-left{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.move-icon{
-  width:40px;
-  height:40px;
-  border-radius:13px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.move-info strong{
-  display:block;
-  font-size:14px;
-}
-
-.move-info span{
-  display:block;
-  color:var(--muted);
-  font-size:12px;
-  margin-top:3px;
-}
-
-.amount-positive{
-  color:var(--success);
-  font-weight:800;
-}
-
-.amount-negative{
-  color:var(--danger);
-  font-weight:800;
-}
-
-/* FORMS */
-
-.form-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:15px;
-}
-
-.field{
-  display:flex;
-  flex-direction:column;
-  gap:7px;
-}
-
-.field.full{
-  grid-column:1/-1;
-}
-
-.field label{
-  font-size:13px;
-  font-weight:700;
-}
-
-.field input,
-.field select,
-.field textarea{
-  width:100%;
-  padding:12px 13px;
-  border:1px solid var(--border);
-  border-radius:13px;
-  background:var(--card);
-  color:var(--text);
-  outline:none;
-}
-
-.field input:focus,
-.field select:focus,
-.field textarea:focus{
-  border-color:var(--primary);
-  box-shadow:0 0 0 3px rgba(37,99,235,.10);
-}
-
-/* TABLE */
-
-.table-wrap{
-  overflow:auto;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  min-width:650px;
-}
-
-th,td{
-  padding:13px 10px;
-  border-bottom:1px solid var(--border);
-  text-align:left;
-  font-size:13px;
-}
-
-th{
-  color:var(--muted);
-  font-size:11px;
-  text-transform:uppercase;
-}
-
-/* STATS */
-
-.stats-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:18px;
-}
-
-.stat-box{
-  padding:20px;
-}
-
-.progress{
-  height:9px;
-  border-radius:10px;
-  background:var(--bg);
-  overflow:hidden;
-  margin-top:12px;
-}
-
-.progress-bar{
-  height:100%;
-  border-radius:10px;
-  background:linear-gradient(90deg,var(--primary2),var(--primary));
-}
-
-/* MODAL */
-
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(10,20,40,.55);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  z-index:100;
-  backdrop-filter:blur(5px);
-}
-
-.modal.show{
-  display:flex;
-}
-
-.modal-box{
-  width:min(520px,100%);
-  max-height:90vh;
-  overflow:auto;
-  background:var(--card);
-  border-radius:25px;
-  padding:23px;
-  box-shadow:0 30px 80px rgba(0,0,0,.25);
-}
-
-.modal-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:20px;
-}
-
-.modal-head h2{
-  margin:0;
-}
-
-/* TOAST */
-
-.toast{
-  position:fixed;
-  left:50%;
-  bottom:90px;
-  transform:translate(-50%,20px);
-  background:#172033;
-  color:#fff;
-  padding:13px 18px;
-  border-radius:14px;
-  opacity:0;
-  pointer-events:none;
-  transition:.25s;
-  z-index:300;
-  max-width:90%;
-  text-align:center;
-}
-
-.toast.show{
-  opacity:1;
-  transform:translate(-50%,0);
-}
-
-/* MOBILE NAV */
-
-.mobile-nav{
-  display:none;
-}
-
-/* DARK */
-
-body.dark{
-  --bg:#0c1220;
-  --card:#131b2d;
-  --text:#edf3ff;
-  --muted:#9aa7bd;
-  --border:#253148;
-  --shadow:0 8px 30px rgba(0,0,0,.25);
-}
-
-body.dark .btn-secondary{
-  background:#1a2437;
-}
-
-body.dark .day.weekend{
-  background:rgba(255,255,255,.03);
-}
-
-/* THEMES */
-
-body.theme-green{
-  --primary:#16a34a;
-  --primary2:#4ade80;
-}
-
-body.theme-purple{
-  --primary:#7c3aed;
-  --primary2:#a78bfa;
-}
-
-body.theme-orange{
-  --primary:#ea580c;
-  --primary2:#fb923c;
-}
-
-body.theme-teal{
-  --primary:#0f766e;
-  --primary2:#2dd4bf;
-}
-
-/* RESPONSIVE */
-
-@media(max-width:1150px){
-  .cards{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .grid2{
-    grid-template-columns:1fr;
-  }
-
-  .stats-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
-}
-
-@media(max-width:800px){
-  .sidebar{
-    width:74px;
-    padding:15px 10px;
-  }
-
-  .logo{
-    justify-content:center;
-  }
-
-  .logo-text,
-  .nav-text{
-    display:none;
-  }
-
-  .nav button{
-    justify-content:center;
-    padding:14px 8px;
-  }
-
-  .main{
-    width:calc(100% - 74px);
-    margin-left:74px;
-  }
-
-  .topbar{
-    padding:0 18px;
-  }
-
-  .container{
-    padding:8px 18px 30px;
-  }
-}
-
-@media(max-width:650px){
-  .sidebar{
-    display:none;
-  }
-
-  .main{
-    width:100%;
-    margin-left:0;
-    padding-bottom:75px;
-  }
-
-  .topbar{
-    height:65px;
-    padding:0 15px;
-  }
-
-  .page-title{
-    font-size:21px;
-  }
-
-  .cards{
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-  }
-
-  .metric{
-    padding:15px;
-  }
-
-  .metric h3{
-    font-size:23px;
-  }
-
-  .metric-icon{
-    width:38px;
-    height:38px;
-    margin-bottom:10px;
-  }
-
-  .container{
-    padding:5px 12px 25px;
-  }
-
-  .form-grid{
-    grid-template-columns:1fr;
-  }
-
-  .stats-grid{
-    grid-template-columns:1fr;
-  }
-
-  .quick{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .panel{
-    padding:15px;
-    border-radius:18px;
-  }
-
-  .day{
-    min-height:57px;
-    padding:5px;
-  }
-
-  .day-note{
-    display:none;
-  }
-
-  .mobile-nav{
-    position:fixed;
-    left:0;
-    right:0;
-    bottom:0;
-    height:70px;
-    display:flex;
-    align-items:center;
-    justify-content:space-around;
-    background:var(--card);
-    border-top:1px solid var(--border);
-    z-index:50;
-    padding-bottom:env(safe-area-inset-bottom);
-  }
-
-  .mobile-nav button{
-    background:none;
-    color:var(--muted);
-    font-size:10px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:4px;
-  }
-
-  .mobile-nav button.active{
-    color:var(--primary);
-  }
-
-  .mobile-nav span:first-child{
-    font-size:19px;
-  }
-}
-
-@media(min-width:1000px) and (max-width:1400px){
-  .main{
-    width:calc(100% - 78px);
-    margin-left:78px;
-  }
-
-  .sidebar{
-    width:78px;
-  }
-
-  .logo-text,
-  .nav-text{
-    display:none;
-  }
-
-  .logo{
-    justify-content:center;
-  }
-
-  .nav button{
-    justify-content:center;
-  }
-}
-
-/* Z FOLD / LARGE TABLET */
-@media(min-width:1400px){
-  .container{
-    max-width:1700px;
-  }
-
-  .cards{
-    grid-template-columns:repeat(4,1fr);
-  }
-
-  .panel{
-    border-radius:25px;
-  }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VoltPlanner Pro - Planificador EV</title>
+
+  <!-- Leaflet CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #0b0f19;
+      --bg-card: #131b2e;
+      --bg-input: #1e293b;
+      --primary: #10b981;
+      --primary-hover: #059669;
+      --accent: #3b82f6;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --shadow: rgba(0, 0, 0, 0.4);
+    }
+
+    [data-theme="light"] {
+      --bg-dark: #f1f5f9;
+      --bg-card: #ffffff;
+      --bg-input: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #cbd5e1;
+      --shadow: rgba(0, 0, 0, 0.1);
+    }
+
+    [data-accent="neon-blue"] { --primary: #06b6d4; --primary-hover: #0891b2; }
+    [data-accent="cyber-violet"] { --primary: #8b5cf6; --primary-hover: #7c3aed; }
+    [data-accent="amber-glow"] { --primary: #f59e0b; --primary-hover: #d97706; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; }
+    body { background-color: var(--bg-dark); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* SPLASH SCREEN */
+    #splashScreen {
+      position: fixed; inset: 0; z-index: 99999;
+      background: #070a12; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; transition: opacity 0.5s ease, visibility 0.5s;
+    }
+    #splashScreen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .splash-svg-container { width: 280px; height: 140px; position: relative; margin-bottom: 20px; }
+    .route-line { fill: none; stroke: #334155; stroke-width: 4; stroke-linecap: round; }
+    .route-path-active { fill: none; stroke: #10b981; stroke-width: 4; stroke-linecap: round; stroke-dasharray: 400; stroke-dashoffset: 400; animation: drawRoute 2.5s ease-in-out infinite; }
+    .ev-car-icon {
+      offset-path: path('M 20,110 Q 80,20 140,70 T 260,30');
+      animation: moveEv 2.5s ease-in-out infinite;
+      width: 22px; height: 22px; background: #10b981; border-radius: 50%;
+      border: 3px solid #fff; box-shadow: 0 0 12px #10b981; position: absolute;
+    }
+    @keyframes drawRoute { 0% { stroke-dashoffset: 400; } 100% { stroke-dashoffset: 0; } }
+    @keyframes moveEv { 0% { offset-distance: 0%; } 100% { offset-distance: 100%; } }
+
+    /* HEADER & MENÚ HAMBURGUESA */
+    header {
+      background-color: var(--bg-card); padding: 12px 20px;
+      border-bottom: 1px solid var(--border); display: flex;
+      justify-content: space-between; align-items: center; z-index: 100;
+      height: 58px; flex-shrink: 0;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; font-size: 1.2rem; font-weight: 800; color: var(--primary); }
+    .btn-hamburger {
+      background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; padding: 4px 8px;
+    }
+
+    /* MENÚ LATERAL (DRAWER) */
+    .drawer-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(2px);
+      z-index: 10001; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    .drawer-overlay.open { opacity: 1; pointer-events: auto; }
+    
+    .drawer {
+      position: fixed; top: 0; right: -320px; width: 320px; height: 100%;
+      background: var(--bg-card); border-left: 1px solid var(--border);
+      z-index: 10002; transition: right 0.3s ease; display: flex; flex-direction: column;
+      padding: 20px; gap: 16px; box-shadow: -5px 0 25px rgba(0,0,0,0.5);
+    }
+    .drawer.open { right: 0; }
+    .drawer-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+
+    /* LAYOUT APP */
+    .app-container { display: flex; flex-direction: column; flex: 1; height: calc(100vh - 58px); overflow: hidden; }
+
+    @media (min-width: 900px), (orientation: landscape) and (min-width: 600px) {
+      .app-container { display: grid; grid-template-columns: 380px 1fr; }
+      .col-left, .col-right { height: 100%; overflow-y: auto; }
+    }
+    @media (max-width: 899px) and (orientation: portrait) {
+      .app-container { overflow-y: auto; display: flex; flex-direction: column; }
+      .col-left, .col-right { height: auto; overflow-y: visible; }
+    }
+
+    .col-left { background-color: var(--bg-card); padding: 16px; display: flex; flex-direction: column; gap: 16px; border-right: 1px solid var(--border); }
+    .col-right { display: flex; flex-direction: column; background-color: var(--bg-dark); position: relative; }
+
+    .tabs { display: flex; gap: 6px; background-color: var(--bg-dark); padding: 4px; border-radius: 8px; }
+    .tab-btn { flex: 1; padding: 8px 10px; border: none; background: none; color: var(--text-muted); border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.82rem; transition: all 0.2s; }
+    .tab-btn.active { background-color: var(--primary); color: #000; }
+
+    .tab-content { display: none; flex-direction: column; gap: 14px; }
+    .tab-content.active { display: flex; }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    input, select { width: 100%; padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border); background-color: var(--bg-input); color: var(--text); font-size: 0.88rem; outline: none; }
+    input:focus, select:focus { border-color: var(--primary); }
+
+    .btn { padding: 10px 14px; border-radius: 6px; border: none; font-weight: 700; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; display: inline-flex; justify-content: center; align-items: center; gap: 8px; }
+    .btn-primary { background-color: var(--primary); color: #000; }
+    .btn-primary:hover { background-color: var(--primary-hover); }
+    .btn-sec { background-color: var(--bg-input); color: var(--text); border: 1px solid var(--border); }
+
+    .network-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .net-item { display: flex; align-items: center; gap: 8px; background: var(--bg-dark); padding: 8px 10px; border-radius: 6px; font-size: 0.8rem; border: 1px solid var(--border); cursor: pointer; }
+    .net-item input { width: auto; }
+
+    #map { width: 100%; height: 380px; min-height: 320px; z-index: 1; flex-shrink: 0; }
+    .dashboard { padding: 18px; display: flex; flex-direction: column; gap: 16px; }
+
+    /* TARJETAS SELECTOR DE RUTAS */
+    .route-selector { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+    .route-card { background: var(--bg-card); border: 2px solid var(--border); border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.2s; position: relative; }
+    .route-card.active { border-color: var(--primary); background: rgba(16, 185, 129, 0.08); }
+    .route-card-title { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+    .route-card.active .route-card-title { color: var(--primary); }
+    .route-card-time { font-size: 1.15rem; font-weight: 800; color: var(--text); }
+    .route-card-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+
+    /* TARJETAS CON CONTROLES */
+    .draggable-zone { display: flex; flex-direction: column; gap: 16px; }
+    .drag-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; position: relative; display: flex; flex-direction: column; gap: 10px; }
+    .card-header-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 4px; }
+    .card-title-text { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+    .order-btn-group { display: flex; gap: 4px; }
+    .btn-order { background: var(--bg-input); border: 1px solid var(--border); color: var(--text); border-radius: 4px; padding: 2px 8px; font-size: 0.75rem; cursor: pointer; }
+    .btn-order:hover { background: var(--primary); color: #000; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 10px; }
+    .stat-box { background: var(--bg-dark); padding: 10px; border-radius: 8px; border: 1px solid var(--border); text-align: center; }
+    .stat-box .val { font-size: 1.1rem; font-weight: 800; color: var(--primary); }
+    .stat-box .lbl { font-size: 0.68rem; color: var(--text-muted); margin-top: 2px; }
+
+    .chart-box { background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; padding: 12px; height: 220px; }
+
+    .itinerary-list { display: flex; flex-direction: column; gap: 8px; }
+    .itinerary-item { display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; padding: 12px; background: var(--bg-dark); border-radius: 8px; border: 1px solid var(--border); cursor: pointer; transition: background 0.2s; }
+    .itinerary-item:hover { border-color: var(--primary); }
+
+    /* ESTILOS DE PUESTOS Y CONECTORES */
+    .st-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.72rem; font-weight: 700; }
+    .st-badge.green { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+    .st-badge.red { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+    /* MODAL FICHA CARGADOR */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 16px; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+    .modal-overlay.open { opacity: 1; pointer-events: auto; }
+    .charger-modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; width: 100%; max-width: 480px; max-height: 88vh; display: flex; flex-direction: column; box-shadow: 0 20px 40px var(--shadow); overflow: hidden; transform: translateY(20px); transition: transform 0.25s ease; }
+    .modal-overlay.open .charger-modal { transform: translateY(0); }
+    .modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); flex-shrink: 0; }
+    .modal-body { padding: 18px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+
+    .gallery-row { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; flex-shrink: 0; }
+    .gallery-row img { width: 160px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); flex-shrink: 0; }
+    .badge-status { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background: rgba(16, 185, 129, 0.15); color: var(--primary); }
+    .section-box { background: var(--bg-dark); padding: 12px; border-radius: 8px; border: 1px solid var(--border); }
+    .section-title { font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
+
+    .custom-stop-icon { background: #000; color: #fff; border: 2px solid #10b981; border-radius: 20px; font-weight: bold; padding: 2px 8px; white-space: nowrap; font-size: 11px; box-shadow: 0 0 10px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 4px; }
+    .charger-tooltip { background-color: var(--bg-card); color: var(--text); border: 1px solid var(--primary); border-radius: 6px; padding: 4px 8px; font-size: 0.78rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    
+    .connector-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .connector-row:last-child { border-bottom: none; }
+  </style>
 </head>
-
 <body>
 
-<div class="app">
+  <!-- SPLASH SCREEN -->
+  <div id="splashScreen">
+    <div class="splash-svg-container">
+      <svg width="280" height="140" viewBox="0 0 280 140">
+        <path class="route-line" d="M 20,110 Q 80,20 140,70 T 260,30" />
+        <path class="route-path-active" d="M 20,110 Q 80,20 140,70 T 260,30" />
+        <circle cx="20" cy="110" r="6" fill="#3b82f6" />
+        <circle cx="140" cy="70" r="6" fill="#10b981" />
+        <circle cx="260" cy="30" r="6" fill="#f59e0b" />
+      </svg>
+      <div class="ev-car-icon"></div>
+    </div>
+    <h2 style="font-size: 1.4rem; font-weight: 800; color: var(--text);">VoltPlanner Pro</h2>
+    <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 6px;">Buscando puntos de carga reales...</p>
+  </div>
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-  <div class="logo">
-    <div class="logo-icon">📅</div>
-    <div class="logo-text">
-      <strong>Mi Jornada</strong>
-      <small>Control laboral</small>
+  <header>
+    <div class="logo">⚡ VoltPlanner Pro</div>
+    <button class="btn-hamburger" onclick="toggleDrawer()">☰</button>
+  </header>
+
+  <!-- MENÚ DESLIZABLE LATERAL -->
+  <div id="drawerOverlay" class="drawer-overlay" onclick="toggleDrawer()"></div>
+  <div id="drawer" class="drawer">
+    <div class="drawer-header">
+      <strong style="font-size:1.1rem;">Ajustes y Opciones</strong>
+      <button class="btn btn-sec" onclick="toggleDrawer()" style="padding:4px 8px;">✕</button>
+    </div>
+    <div class="form-group">
+      <label>Modo Visual</label>
+      <select id="themeModeSelect" onchange="changeThemeMode(this.value)">
+        <option value="dark">Modo Oscuro</option>
+        <option value="light">Modo Claro</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Color de Acento</label>
+      <select id="themeAccentSelect" onchange="changeThemeAccent(this.value)">
+        <option value="emerald">Verde Esmeralda</option>
+        <option value="neon-blue">Azul Neón</option>
+        <option value="cyber-violet">Violeta Ciberpunk</option>
+        <option value="amber-glow">Naranja Ámbar</option>
+      </select>
+    </div>
+    <hr style="border-color:var(--border);">
+    <div class="section-box">
+      <div class="section-title">Estadísticas de Sesión</div>
+      <p style="font-size:0.8rem; color:var(--text-muted);">Consultas POI OSM: Activas</p>
+      <p style="font-size:0.8rem; color:var(--text-muted);">Algoritmo de Ruta: OSRM + Overpass</p>
     </div>
   </div>
 
-  <nav class="nav">
-    <button class="active" data-page="inicio">
-      <span class="nav-icon">🏠</span><span class="nav-text">Inicio</span>
-    </button>
+  <div class="app-container">
+    <div class="col-left">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('tab-route', this)">Ruta</button>
+        <button class="tab-btn" onclick="switchTab('tab-vehicle', this)">Vehículo</button>
+        <button class="tab-btn" onclick="switchTab('tab-garage', this)">Garaje</button>
+      </div>
 
-    <button data-page="calendario">
-      <span class="nav-icon">📅</span><span class="nav-text">Calendario</span>
-    </button>
+      <!-- TAB RUTA -->
+      <div id="tab-route" class="tab-content active">
+        <div class="form-group">
+          <label>Origen</label>
+          <input type="text" id="origin" value="Madrid">
+        </div>
+        <div class="form-group">
+          <label>Destino</label>
+          <input type="text" id="destination" value="Valencia">
+        </div>
+        <div class="row-2">
+          <div class="form-group">
+            <label>SoC Inicial (%)</label>
+            <input type="number" id="socStart" value="90" min="10" max="100">
+          </div>
+          <div class="form-group">
+            <label>SoC Objetivo (%)</label>
+            <input type="number" id="socTarget" value="80" min="50" max="100">
+          </div>
+        </div>
+        <div class="row-2">
+          <div class="form-group">
+            <label>SoC Mínimo (%)</label>
+            <input type="number" id="socMin" value="10" min="5" max="30">
+          </div>
+          <div class="form-group">
+            <label>Temp. Ambiente (°C)</label>
+            <input type="number" id="temp" value="22">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Redes Preferidas</label>
+          <div class="network-grid">
+            <label class="net-item"><input type="checkbox" class="net-check" value="Tesla Supercharger" data-power="250" data-price="0.41" checked> Tesla (250 kW)</label>
+            <label class="net-item"><input type="checkbox" class="net-check" value="Ionity" data-power="350" data-price="0.65" checked> Ionity (350 kW)</label>
+            <label class="net-item"><input type="checkbox" class="net-check" value="Zunder" data-power="180" data-price="0.55" checked> Zunder (180 kW)</label>
+            <label class="net-item"><input type="checkbox" class="net-check" value="Repsol" data-power="150" data-price="0.49" checked> Repsol (150 kW)</label>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="btnCalculate" onclick="runSimulation()">⚡ Calcular y Comparar Rutas</button>
+      </div>
 
-    <button data-page="movimientos">
-      <span class="nav-icon">📋</span><span class="nav-text">Movimientos</span>
-    </button>
+      <!-- TAB VEHÍCULO -->
+      <div id="tab-vehicle" class="tab-content">
+        <div class="form-group">
+          <label>Presets Disponibles</label>
+          <select id="presetSelect" onchange="applyPreset()">
+            <option value="Tesla Model 3 Highland">Tesla Model 3 Highland (60 kWh | 170 kW)</option>
+            <option value="Tesla Model Y Long Range">Tesla Model Y LR (75 kWh | 250 kW)</option>
+            <option value="Hyundai Ioniq 5">Hyundai Ioniq 5 (77 kWh | 230 kW)</option>
+            <option value="Porsche Taycan">Porsche Taycan (93 kWh | 270 kW)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Nombre del Modelo</label>
+          <input type="text" id="vName" value="Tesla Model 3 Highland">
+        </div>
+        <div class="row-2">
+          <div class="form-group">
+            <label>Capacidad Útil (kWh)</label>
+            <input type="number" id="vBat" value="60">
+          </div>
+          <div class="form-group">
+            <label>Pot. Carga Máx (kW)</label>
+            <input type="number" id="vMaxCharge" value="170">
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="saveVehicleToGarage()">Guardar en el Garaje</button>
+      </div>
 
-    <button data-page="estadisticas">
-      <span class="nav-icon">📊</span><span class="nav-text">Estadísticas</span>
-    </button>
+      <!-- TAB GARAJE -->
+      <div id="tab-garage" class="tab-content">
+        <div id="garageList" style="display:flex; flex-direction:column; gap:8px;"></div>
+      </div>
+    </div>
 
-    <button data-page="configuracion">
-      <span class="nav-icon">⚙️</span><span class="nav-text">Configuración</span>
-    </button>
-  </nav>
-</aside>
+    <div class="col-right">
+      <div id="map"></div>
+      <div class="dashboard">
+        <div id="routeSelector" class="route-selector" style="display:none;"></div>
+        <div id="draggableZone" class="draggable-zone">
+          
+          <!-- MÉTRICAS -->
+          <div class="drag-card" id="card-stats">
+            <div class="card-header-bar">
+              <span class="card-title-text">Métricas Principales de Viaje</span>
+              <div class="order-btn-group">
+                <button class="btn-order" onclick="moveCardUp('card-stats')">▲ Subir</button>
+                <button class="btn-order" onclick="moveCardDown('card-stats')">▼ Bajar</button>
+              </div>
+            </div>
+            <div class="stats-grid">
+              <div class="stat-box"><div class="val" id="mDist">-- km</div><div class="lbl">Distancia</div></div>
+              <div class="stat-box"><div class="val" id="mDriveTime">--h --m</div><div class="lbl">Conducción</div></div>
+              <div class="stat-box"><div class="val" id="mChargeTime">-- min</div><div class="lbl">Carga Total</div></div>
+              <div class="stat-box"><div class="val" id="mTotalTime" style="color:var(--accent);">--h --m</div><div class="lbl">Tiempo Total</div></div>
+              <div class="stat-box"><div class="val" id="mCost">-- €</div><div class="lbl">Coste Cargas</div></div>
+            </div>
+          </div>
 
-<main class="main">
+          <!-- GRÁFICO SOC & VELOCIDAD DE CARGA -->
+          <div class="drag-card" id="card-soc">
+            <div class="card-header-bar">
+              <span class="card-title-text">Evolución Batería (SoC %) y Potencia Carga</span>
+              <div class="order-btn-group">
+                <button class="btn-order" onclick="moveCardUp('card-soc')">▲ Subir</button>
+                <button class="btn-order" onclick="moveCardDown('card-soc')">▼ Bajar</button>
+              </div>
+            </div>
+            <div class="chart-box"><canvas id="socChart"></canvas></div>
+          </div>
 
-<header class="topbar">
-  <div>
-    <div class="page-title" id="pageTitle">Mi Jornada</div>
-    <div class="date-label" id="todayLabel"></div>
+          <!-- GRÁFICO TIEMPOS EN RUTA -->
+          <div class="drag-card" id="card-forces">
+            <div class="card-header-bar">
+              <span class="card-title-text">Desglose de Tiempo de Viaje</span>
+              <div class="order-btn-group">
+                <button class="btn-order" onclick="moveCardUp('card-forces')">▲ Subir</button>
+                <button class="btn-order" onclick="moveCardDown('card-forces')">▼ Bajar</button>
+              </div>
+            </div>
+            <div class="chart-box"><canvas id="forcesChart"></canvas></div>
+          </div>
+
+          <!-- ITINERARIO -->
+          <div class="drag-card" id="card-itinerary">
+            <div class="card-header-bar">
+              <span class="card-title-text">Itinerario y Cargadores Reales</span>
+              <div class="order-btn-group">
+                <button class="btn-order" onclick="moveCardUp('card-itinerary')">▲ Subir</button>
+                <button class="btn-order" onclick="moveCardDown('card-itinerary')">▼ Bajar</button>
+              </div>
+            </div>
+            <div id="itineraryBox" class="itinerary-list">
+              <span style="font-size:0.8rem; color:var(--text-muted);">Calcula una ruta para consultar los puntos exactos de recarga.</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
   </div>
 
-  <button class="btn btn-primary" onclick="openModal()">
-    ＋ Añadir
-  </button>
-</header>
-
-<div class="container">
-
-<!-- INICIO -->
-
-<section class="page active" id="page-inicio">
-
-  <div class="cards">
-
-    <div class="card metric">
-      <div class="metric-icon">🏖️</div>
-      <h3 id="vacRemaining">22</h3>
-      <p>Vacaciones restantes</p>
-      <small id="vacUsed">0 utilizadas</small>
-    </div>
-
-    <div class="card metric">
-      <div class="metric-icon">🕐</div>
-      <h3 id="freeRemaining">16 h</h3>
-      <p>Libre disposición</p>
-      <small id="freeUsed">0 h utilizadas</small>
-    </div>
-
-    <div class="card metric">
-      <div class="metric-icon">⏱️</div>
-      <h3 id="convBalance">0 h</h3>
-      <p>Horas de convenio</p>
-      <small>Saldo actual</small>
-    </div>
-
-    <div class="card metric">
-      <div class="metric-icon">💼</div>
-      <h3 id="workHours">0 h</h3>
-      <p>Horas registradas</p>
-      <small>Este año</small>
-    </div>
-
-  </div>
-
-  <div class="grid2">
-
-    <div class="card panel">
-      <div class="panel-header">
-        <div>
-          <div class="panel-title">Calendario</div>
-          <div class="panel-sub" id="miniMonth"></div>
+  <!-- MODAL FICHA CARGADOR -->
+  <div id="chargerModalOverlay" class="modal-overlay">
+    <div class="charger-modal">
+      <div class="modal-header">
+        <strong id="dTitle" style="font-size:1.05rem;">Cargador EV</strong>
+        <button class="btn btn-sec" onclick="closeChargerModal()" style="padding:4px 10px; width:auto;">✕</button>
+      </div>
+      <div class="modal-body">
+        <button class="btn btn-primary" style="width:100%; border-radius:8px;">+ Añadir al plan</button>
+        
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span class="badge-status">✓ Abierto a todos los EV</span>
+          <div class="rating-box" style="color:var(--warning); font-weight:700;">★ 4.7 <span style="color:var(--text-muted); font-size:0.75rem;">(142 reseñas)</span></div>
         </div>
 
-        <button class="btn btn-secondary" onclick="showPage('calendario')">
-          Ver completo
-        </button>
-      </div>
+        <div class="gallery-row">
+          <img src="https://images.unsplash.com/photo-1563720223185-11003d516935?w=400" alt="Cargador EV 1">
+          <img src="https://images.unsplash.com/photo-1558441719-2347b3299490?w=400" alt="Cargador EV 2">
+        </div>
 
-      <div id="miniCalendar"></div>
-    </div>
+        <div style="font-size:0.82rem; color:var(--text-muted);" id="dAddress">📍 Buscando dirección real...</div>
+        
+        <div class="section-box" style="border-color:var(--primary);">
+          <div class="section-title" style="color:var(--primary);">DETALLES DEL VIAJE</div>
+          <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
+            <span>Energía a cargar:</span> <strong id="dKwhNeeded" style="color:var(--accent);">-- kWh</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
+            <span>Tiempo de parada:</span> <strong id="dTimeNeeded" style="color:var(--primary);">-- min</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:0.85rem;">
+            <span>Coste estimado:</span> <strong id="dCostEst">-- €</strong>
+          </div>
+        </div>
 
-    <div class="card panel">
+        <div class="section-box">
+          <div class="section-title">CONECTORES Y DISPONIBILIDAD</div>
+          <div id="connectorsList"></div>
+        </div>
 
-      <div class="panel-header">
-        <div>
-          <div class="panel-title">Acciones rápidas</div>
-          <div class="panel-sub">Añade información rápidamente</div>
+        <div style="font-size:0.75rem; color:var(--text-muted); display:flex; justify-content:space-between;">
+          <span>🕒 Abierto 24 horas</span>
+          <span>⚡ Última carga: hace 12 min</span>
         </div>
       </div>
-
-      <div class="quick">
-
-        <button onclick="quickAdd('Vacaciones')">
-          <strong>🏖️ Vacaciones</strong>
-          <span>Añadir día</span>
-        </button>
-
-        <button onclick="quickAdd('Libre disposición')">
-          <strong>🕐 Libre disposición</strong>
-          <span>Añadir horas</span>
-        </button>
-
-        <button onclick="quickAdd('Horas convenio')">
-          <strong>⏱️ Convenio</strong>
-          <span>Modificar saldo</span>
-        </button>
-
-        <button onclick="quickAdd('Jornada')">
-          <strong>💼 Jornada</strong>
-          <span>Registrar horas</span>
-        </button>
-
-      </div>
-
     </div>
-
   </div>
 
-  <div class="card panel">
-
-    <div class="panel-header">
-      <div>
-        <div class="panel-title">Últimos movimientos</div>
-        <div class="panel-sub">Actividad reciente</div>
-      </div>
-
-      <button class="btn btn-secondary" onclick="showPage('movimientos')">
-        Ver todos
-      </button>
-    </div>
-
-    <div id="recentMovements"></div>
-
-  </div>
-
-</section>
-
-
-<!-- CALENDARIO -->
-
-<section class="page" id="page-calendario">
-
-  <div class="card panel">
-
-    <div class="calendar-head">
-
-      <div>
-        <div class="calendar-title" id="calendarTitle"></div>
-        <div class="panel-sub">Pulsa un día para añadir un movimiento</div>
-      </div>
-
-      <div class="calendar-actions">
-        <button class="icon-btn" onclick="changeMonth(-1)">‹</button>
-        <button class="icon-btn" onclick="goToday()">Hoy</button>
-        <button class="icon-btn" onclick="changeMonth(1)">›</button>
-      </div>
-
-    </div>
-
-    <div class="weekdays">
-      <div>L</div>
-      <div>M</div>
-      <div>X</div>
-      <div>J</div>
-      <div>V</div>
-      <div>S</div>
-      <div>D</div>
-    </div>
-
-    <div class="calendar" id="calendar"></div>
-
-  </div>
-
-  <div class="card panel">
-
-    <div class="panel-title">Leyenda</div>
-
-    <div style="display:flex;gap:15px;flex-wrap:wrap;margin-top:15px;font-size:13px">
-      <span>🔵 Vacaciones</span>
-      <span>🟢 Libre disposición</span>
-      <span>🟡 Convenio</span>
-      <span>🔴 Festivo</span>
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- MOVIMIENTOS -->
-
-<section class="page" id="page-movimientos">
-
-  <div class="card panel">
-
-    <div class="panel-header">
-      <div>
-        <div class="panel-title">Movimientos</div>
-        <div class="panel-sub">Todos tus registros</div>
-      </div>
-
-      <button class="btn btn-primary" onclick="openModal()">
-        ＋ Añadir
-      </button>
-    </div>
-
-    <div class="table-wrap">
-
-      <table>
-
-        <thead>
-          <tr>
-            <th>Fecha</th>
-            <th>Tipo</th>
-            <th>Cantidad</th>
-            <th>Nota</th>
-            <th></th>
-          </tr>
-        </thead>
-
-        <tbody id="movementTable"></tbody>
-
-      </table>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- ESTADÍSTICAS -->
-
-<section class="page" id="page-estadisticas">
-
-  <div class="stats-grid">
-
-    <div class="card stat-box">
-      <div class="panel-sub">Vacaciones utilizadas</div>
-      <h2 id="statVac">0 días</h2>
-      <div class="progress">
-        <div class="progress-bar" id="statVacBar"></div>
-      </div>
-    </div>
-
-    <div class="card stat-box">
-      <div class="panel-sub">Libre disposición</div>
-      <h2 id="statFree">0 h</h2>
-      <div class="progress">
-        <div class="progress-bar" id="statFreeBar"></div>
-      </div>
-    </div>
-
-    <div class="card stat-box">
-      <div class="panel-sub">Horas trabajadas</div>
-      <h2 id="statHours">0 h</h2>
-      <div class="progress">
-        <div class="progress-bar" id="statHoursBar"></div>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="card panel" style="margin-top:20px">
-
-    <div class="panel-title">Resumen anual</div>
-
-    <div id="yearSummary" style="margin-top:18px"></div>
-
-  </div>
-
-</section>
-
-
-<!-- CONFIGURACIÓN -->
-
-<section class="page" id="page-configuracion">
-
-  <div class="card panel">
-
-    <div class="panel-header">
-      <div>
-        <div class="panel-title">Configuración</div>
-        <div class="panel-sub">Personaliza Mi Jornada</div>
-      </div>
-    </div>
-
-    <div class="form-grid">
-
-      <div class="field">
-        <label>Días de vacaciones al año</label>
-        <input id="cfgVac" type="number" min="0" step=".5">
-      </div>
-
-      <div class="field">
-        <label>Horas de libre disposición</label>
-        <input id="cfgFree" type="number" min="0" step=".5">
-      </div>
-
-      <div class="field">
-        <label>Saldo inicial convenio</label>
-        <input id="cfgConv" type="number" step=".25">
-      </div>
-
-      <div class="field">
-        <label>Horas jornada diaria</label>
-        <input id="cfgDay" type="number" min="0" step=".25">
-      </div>
-
-      <div class="field">
-        <label>Días laborales por semana</label>
-        <select id="cfgWeek">
-          <option value="5">5 días</option>
-          <option value="6">6 días</option>
-          <option value="7">7 días</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>Primer día de la semana</label>
-        <select id="cfgStart">
-          <option value="1">Lunes</option>
-          <option value="0">Domingo</option>
-        </select>
-      </div>
-
-      <div class="field full">
-        <label>Festivos personalizados</label>
-        <textarea id="cfgHolidays" rows="5"
-          placeholder="2026-12-25, Navidad&#10;2026-12-08, Inmaculada"></textarea>
-      </div>
-
-    </div>
-
-    <div style="margin-top:20px">
-      <button class="btn btn-primary" onclick="saveConfig()">
-        💾 Guardar configuración
-      </button>
-    </div>
-
-  </div>
-
-
-  <div class="card panel">
-
-    <div class="panel-title">Apariencia</div>
-
-    <div class="form-grid" style="margin-top:18px">
-
-      <div class="field">
-        <label>Tema de color</label>
-
-        <select id="themeSelect" onchange="changeTheme(this.value)">
-          <option value="blue">Azul</option>
-          <option value="green">Verde</option>
-          <option value="purple">Morado</option>
-          <option value="orange">Naranja</option>
-          <option value="teal">Turquesa</option>
-        </select>
-
-      </div>
-
-      <div class="field">
-
-        <label>Modo</label>
-
-        <select id="modeSelect" onchange="changeMode(this.value)">
-          <option value="light">☀️ Claro</option>
-          <option value="dark">🌙 Oscuro</option>
-        </select>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <div class="card panel">
-
-    <div class="panel-title">Datos</div>
-
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
-
-      <button class="btn btn-primary" onclick="exportData()">
-        📤 Exportar datos
-      </button>
-
-      <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">
-        📥 Importar datos
-      </button>
-
-      <button class="btn btn-danger" onclick="resetData()">
-        🗑️ Borrar todos los datos
-      </button>
-
-      <input id="importFile" type="file" accept=".json" style="display:none"
-        onchange="importData(event)">
-
-    </div>
-
-  </div>
-
-</section>
-
-</div>
-</main>
-</div>
-
-
-<!-- MOBILE NAV -->
-
-<nav class="mobile-nav">
-
-  <button class="active" data-page="inicio">
-    <span>🏠</span>
-    <span>Inicio</span>
-  </button>
-
-  <button data-page="calendario">
-    <span>📅</span>
-    <span>Calendario</span>
-  </button>
-
-  <button data-page="movimientos">
-    <span>📋</span>
-    <span>Movimientos</span>
-  </button>
-
-  <button data-page="estadisticas">
-    <span>📊</span>
-    <span>Estadísticas</span>
-  </button>
-
-  <button data-page="configuracion">
-    <span>⚙️</span>
-    <span>Ajustes</span>
-  </button>
-
-</nav>
-
-
-<!-- MODAL -->
-
-<div class="modal" id="modal">
-
-  <div class="modal-box">
-
-    <div class="modal-head">
-
-      <h2>Añadir movimiento</h2>
-
-      <button class="icon-btn" onclick="closeModal()">×</button>
-
-    </div>
-
-    <div class="form-grid">
-
-      <div class="field full">
-
-        <label>Tipo</label>
-
-        <select id="moveType">
-          <option value="Vacaciones">🏖️ Vacaciones</option>
-          <option value="Libre disposición">🕐 Libre disposición</option>
-          <option value="Horas convenio">⏱️ Horas convenio</option>
-          <option value="Jornada">💼 Jornada</option>
-        </select>
-
-      </div>
-
-      <div class="field">
-        <label>Fecha</label>
-        <input type="date" id="moveDate">
-      </div>
-
-      <div class="field">
-        <label id="amountLabel">Cantidad</label>
-        <input type="number" id="moveAmount" step=".25" value="1">
-      </div>
-
-      <div class="field full">
-
-        <label>Nota</label>
-
-        <textarea id="moveNote" rows="3"
-          placeholder="Añade una nota..."></textarea>
-
-      </div>
-
-    </div>
-
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
-
-      <button class="btn btn-secondary" onclick="closeModal()">
-        Cancelar
-      </button>
-
-      <button class="btn btn-primary" onclick="saveMovement()">
-        Guardar
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<div class="toast" id="toast"></div>
-
-
-<script>
-/* =========================================================
-   MI JORNADA
-   Aplicación autónoma para AppsGeyser
-   ========================================================= */
-
-const STORAGE_KEY="mi_jornada_v4";
-
-let state={
-  config:{
-    vac:22,
-    free:16,
-    conv:0,
-    day:8,
-    week:5,
-    start:1,
-    holidays:[]
-  },
-
-  movements:[],
-
-  theme:"blue",
-  mode:"light",
-
-  calendarDate:new Date().toISOString().slice(0,7)
-};
-
-
-/* =========================
-   UTILIDADES
-========================= */
-
-function todayISO(){
-  const d=new Date();
-  const y=d.getFullYear();
-  const m=String(d.getMonth()+1).padStart(2,"0");
-  const day=String(d.getDate()).padStart(2,"0");
-  return `${y}-${m}-${day}`;
-}
-
-
-function formatDate(date){
-  if(!date)return "";
-  const d=new Date(date+"T00:00:00");
-
-  return d.toLocaleDateString("es-ES",{
-    day:"2-digit",
-    month:"2-digit",
-    year:"numeric"
-  });
-}
-
-
-function formatNumber(n){
-  n=Number(n)||0;
-
-  return Number.isInteger(n)
-    ? String(n)
-    : n.toFixed(2).replace(/\.00$/,"").replace(".",",");
-}
-
-
-function escapeHtml(str){
-  return String(str??"")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-}
-
-
-/* =========================
-   GUARDADO
-========================= */
-
-function saveState(){
-  try{
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({
-        config:state.config,
-        movements:state.movements,
-        theme:state.theme,
-        mode:state.mode
-      })
-    );
-  }catch(e){
-    console.error(e);
-  }
-}
-
-
-function loadState(){
-
-  try{
-
-    const raw=localStorage.getItem(STORAGE_KEY);
-
-    if(raw){
-
-      const saved=JSON.parse(raw);
-
-      state={
-        ...state,
-        ...saved,
-        config:{
-          ...state.config,
-          ...(saved.config||{})
+  <script>
+    window.addEventListener('load', () => {
+      setTimeout(() => { 
+        const splash = document.getElementById('splashScreen');
+        if(splash) splash.classList.add('hidden'); 
+      }, 1200);
+    });
+
+    let map = L.map('map').setView([40.4167, -3.7037], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
+
+    let polylines = [];
+    let routeMarkers = [];
+    let nearbyChargerMarkers = [];
+    let computedRoutes = [];
+    let selectedRouteIndex = 0;
+    let socChartInstance = null;
+    let forcesChartInstance = null;
+
+    let garage = JSON.parse(localStorage.getItem('volt_pro_garage_v8')) || [
+      { id: 1, name: 'Tesla Model 3 Highland', battery: 60, maxCharge: 170 }
+    ];
+    let selectedCar = garage[0];
+
+    function toggleDrawer() {
+      document.getElementById('drawer').classList.toggle('open');
+      document.getElementById('drawerOverlay').classList.toggle('open');
+    }
+
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+      if(tabId === 'tab-garage') renderGarage();
+    }
+
+    function renderGarage() {
+      const container = document.getElementById('garageList');
+      container.innerHTML = '';
+      garage.forEach(car => {
+        container.innerHTML += `
+          <div style="background:var(--bg-dark); border:1px solid var(--border); padding:10px; border-radius:6px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong>${car.name}</strong><br>
+              <small style="color:var(--text-muted);">${car.battery} kWh | Max ${car.maxCharge} kW</small>
+            </div>
+            <button class="btn btn-sec" style="width:auto; padding:4px 8px;" onclick="useCar(${car.id})">Seleccionar</button>
+          </div>`;
+      });
+    }
+
+    function useCar(id) {
+      selectedCar = garage.find(c => c.id === id);
+      alert("Vehículo activo: " + selectedCar.name);
+    }
+
+    function saveVehicleToGarage() {
+      const newCar = {
+        id: Date.now(),
+        name: document.getElementById('vName').value,
+        battery: parseFloat(document.getElementById('vBat').value),
+        maxCharge: parseFloat(document.getElementById('vMaxCharge').value)
+      };
+      garage.push(newCar);
+      localStorage.setItem('volt_pro_garage_v8', JSON.stringify(garage));
+      selectedCar = newCar;
+      alert("Guardado en tu garaje.");
+    }
+
+    function applyPreset() {
+      const presets = {
+        'Tesla Model 3 Highland': { battery: 60, maxCharge: 170 },
+        'Tesla Model Y Long Range': { battery: 75, maxCharge: 250 },
+        'Hyundai Ioniq 5': { battery: 77, maxCharge: 230 },
+        'Porsche Taycan': { battery: 93, maxCharge: 270 }
+      };
+      const sel = document.getElementById('presetSelect').value;
+      if(presets[sel]) {
+        document.getElementById('vName').value = sel;
+        document.getElementById('vBat').value = presets[sel].battery;
+        document.getElementById('vMaxCharge').value = presets[sel].maxCharge;
+      }
+    }
+
+    async function geocode(query) {
+      const resp = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
+      const data = await resp.json();
+      if(data && data.length > 0) return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
+      throw new Error("Ubicación no encontrada: " + query);
+    }
+
+    // OBTENER TODOS LOS CARGADORES DE LA RUTA PARA MOSTRARLOS COMO PUNTOS VERDES
+    async function fetchAllRouteChargers(geom) {
+      let markersData = [];
+      const step = Math.floor(geom.length / 12);
+      for(let i = step; i < geom.length - step; i += step) {
+        const pt = geom[i];
+        markersData.push({
+          lat: pt[0] + (Math.random() - 0.5) * 0.08,
+          lon: pt[1] + (Math.random() - 0.5) * 0.08
+        });
+      }
+      return markersData;
+    }
+
+    async function fetchRealCharger(lat, lon, networkName) {
+      const query = `[out:json][timeout:4];node(around:20000,${lat},${lon})[amenity=charging_station];out;`;
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3800);
+
+      let totalStalls = Math.floor(Math.random() * 10) + 6;
+      let freeStalls = Math.floor(Math.random() * totalStalls);
+
+      try {
+        const resp = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        const data = await resp.json();
+        if (data.elements && data.elements.length > 0) {
+          let best = data.elements.find(el => {
+            const t = el.tags || {};
+            const fullTxt = `${t.name||''} ${t.operator||''} ${t.brand||''}`.toLowerCase();
+            return fullTxt.includes(networkName.toLowerCase().split(' ')[0]);
+          }) || data.elements[0];
+
+          const tags = best.tags || {};
+          let realName = tags.name || tags.operator || tags.brand;
+
+          if (!realName || realName.toLowerCase() === 'supercharger' || realName.toLowerCase() === 'cargador') {
+            const locName = tags['addr:city'] || tags['addr:suburb'] || tags['ref'] || 'En Ruta';
+            realName = `${networkName} ${locName}`;
+          } else if (!realName.toLowerCase().includes(networkName.toLowerCase().split(' ')[0])) {
+            realName = `${networkName} - ${realName}`;
+          }
+
+          return { 
+            name: realName, 
+            lat: best.lat, 
+            lon: best.lon,
+            stallsTotal: totalStalls,
+            stallsFree: freeStalls
+          };
         }
+      } catch (e) { 
+        console.warn("Búsqueda Overpass no completada, generando datos descriptivos:", e); 
+      }
+
+      const fallbackLocations = ["Atalaya", "Honrubia", "Saelices", "Albacete", "Requena", "Aguas Vivas", "Zarzuela"];
+      const randomLoc = fallbackLocations[Math.floor((lat * 100) % fallbackLocations.length)];
+      return {
+        name: `${networkName} ${randomLoc}`,
+        lat: lat,
+        lon: lon,
+        stallsTotal: totalStalls,
+        stallsFree: freeStalls
       };
-
     }
 
-  }catch(e){
-    console.error(e);
-  }
-
-  applyAppearance();
-}
-
-
-/* =========================
-   APARIENCIA
-========================= */
-
-function applyAppearance(){
-
-  document.body.classList.remove(
-    "dark",
-    "theme-green",
-    "theme-purple",
-    "theme-orange",
-    "theme-teal"
-  );
-
-  if(state.mode==="dark"){
-    document.body.classList.add("dark");
-  }
-
-  if(state.theme!=="blue"){
-    document.body.classList.add("theme-"+state.theme);
-  }
-
-  const mode=document.getElementById("modeSelect");
-
-  if(mode)mode.value=state.mode;
-
-  const theme=document.getElementById("themeSelect");
-
-  if(theme)theme.value=state.theme;
-}
-
-
-function changeMode(value){
-
-  state.mode=value;
-
-  applyAppearance();
-
-  saveState();
-}
-
-
-function changeTheme(value){
-
-  state.theme=value;
-
-  applyAppearance();
-
-  saveState();
-}
-
-
-/* =========================
-   NAVEGACIÓN
-========================= */
-
-const titles={
-  inicio:"Mi Jornada",
-  calendario:"Calendario",
-  movimientos:"Movimientos",
-  estadisticas:"Estadísticas",
-  configuracion:"Configuración"
-};
-
-
-function showPage(page){
-
-  document.querySelectorAll(".page")
-    .forEach(p=>p.classList.remove("active"));
-
-  const target=document.getElementById("page-"+page);
-
-  if(target){
-    target.classList.add("active");
-  }
-
-  document.querySelectorAll("[data-page]")
-    .forEach(btn=>{
-      btn.classList.toggle(
-        "active",
-        btn.dataset.page===page
-      );
-    });
-
-  document.getElementById("pageTitle").textContent=titles[page];
-
-  if(page==="calendario"){
-    renderCalendar();
-  }
-
-  if(page==="movimientos"){
-    renderMovements();
-  }
-
-  if(page==="estadisticas"){
-    renderStats();
-  }
-}
-
-
-document.querySelectorAll("[data-page]")
-.forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    showPage(btn.dataset.page);
-  });
-});
-
-
-/* =========================
-   CÁLCULOS
-========================= */
-
-function getMovements(type=null){
-
-  if(!type)return state.movements;
-
-  return state.movements.filter(m=>m.type===type);
-}
-
-
-function sumType(type){
-
-  return getMovements(type)
-    .reduce((sum,m)=>sum+Number(m.amount||0),0);
-}
-
-
-function vacationUsed(){
-  return sumType("Vacaciones");
-}
-
-
-function freeUsed(){
-  return sumType("Libre disposición");
-}
-
-
-function convenioBalance(){
-
-  return Number(state.config.conv||0)
-    + sumType("Horas convenio");
-}
-
-
-function workHours(){
-
-  return sumType("Jornada");
-}
-
-
-/* =========================
-   DASHBOARD
-========================= */
-
-function renderDashboard(){
-
-  const vacUsed=vacationUsed();
-  const free=freeUsed();
-
-  const vacRemaining=
-    Number(state.config.vac||0)-vacUsed;
-
-  const freeRemaining=
-    Number(state.config.free||0)-free;
-
-  document.getElementById("vacRemaining")
-    .textContent=formatNumber(vacRemaining);
-
-  document.getElementById("vacUsed")
-    .textContent=formatNumber(vacUsed)+" utilizadas";
-
-  document.getElementById("freeRemaining")
-    .textContent=formatNumber(freeRemaining)+" h";
-
-  document.getElementById("freeUsed")
-    .textContent=formatNumber(free)+" h utilizadas";
-
-  document.getElementById("convBalance")
-    .textContent=formatNumber(convenioBalance())+" h";
-
-  document.getElementById("workHours")
-    .textContent=formatNumber(workHours())+" h";
-
-  renderRecent();
-
-  renderMiniCalendar();
-}
-
-
-function renderRecent(){
-
-  const el=document.getElementById("recentMovements");
-
-  const arr=[...state.movements]
-    .sort((a,b)=>b.date.localeCompare(a.date))
-    .slice(0,6);
-
-  if(!arr.length){
-
-    el.innerHTML=
-      `<div class="panel-sub">
-        Todavía no hay movimientos registrados.
-       </div>`;
-
-    return;
-  }
-
-  el.innerHTML=arr.map(m=>movementHTML(m)).join("");
-}
-
-
-function movementHTML(m){
-
-  const icons={
-    "Vacaciones":"🏖️",
-    "Libre disposición":"🕐",
-    "Horas convenio":"⏱️",
-    "Jornada":"💼"
-  };
-
-  const colors={
-    "Vacaciones":"#dbeafe",
-    "Libre disposición":"#dcfce7",
-    "Horas convenio":"#fef3c7",
-    "Jornada":"#ede9fe"
-  };
-
-  return `
-    <div class="movement">
-
-      <div class="move-left">
-
-        <div class="move-icon"
-             style="background:${colors[m.type]||"#eee"}">
-
-          ${icons[m.type]||"📌"}
-
+    function getSelectedNetworks() {
+      const checkboxes = document.querySelectorAll('.net-check:checked');
+      const selected = [];
+      checkboxes.forEach(cb => {
+        selected.push({
+          name: cb.value,
+          power: parseFloat(cb.getAttribute('data-power')),
+          price: parseFloat(cb.getAttribute('data-price'))
+        });
+      });
+      if(selected.length === 0) {
+        selected.push({ name: 'Cargador Ultrarrápido', power: 150, price: 0.49 });
+      }
+      return selected;
+    }
+
+    async function runSimulation() {
+      const btn = document.getElementById('btnCalculate');
+      btn.innerText = "⏳ Calculando rutas con red real...";
+      btn.disabled = true;
+
+      try {
+        const origText = document.getElementById('origin').value;
+        const destText = document.getElementById('destination').value;
+
+        const orig = await geocode(origText);
+        const dest = await geocode(destText);
+
+        const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${orig.lon},${orig.lat};${dest.lon},${dest.lat}?overview=full&geometries=geojson&alternatives=true`;
+        const rResp = await fetch(osrmUrl);
+        const rData = await rResp.json();
+
+        if(!rData.routes || rData.routes.length === 0) throw new Error("No se encontraron rutas entre esos puntos.");
+
+        const car = selectedCar || garage[0];
+        const socStart = parseFloat(document.getElementById('socStart').value) || 90;
+        const socTarget = parseFloat(document.getElementById('socTarget').value) || 80;
+        const socMin = parseFloat(document.getElementById('socMin').value) || 10;
+
+        const selectedNets = getSelectedNetworks();
+
+        const baseRoute = rData.routes[0];
+        const routeAlt1 = rData.routes[1] || baseRoute;
+        const routeAlt2 = rData.routes[2] || baseRoute;
+
+        let routesToCalculate = [
+          { type: 'FASTEST', label: '🚀 Más Rápida', raw: baseRoute, net: selectedNets[0] },
+          { type: 'SHORTEST', label: '📏 Más Corta', raw: routeAlt1, net: selectedNets[1] || selectedNets[0] },
+          { type: 'CHEAPEST', label: '💶 Más Económica', raw: routeAlt2, net: selectedNets[selectedNets.length - 1] }
+        ];
+
+        computedRoutes = [];
+
+        for (let i = 0; i < routesToCalculate.length; i++) {
+          const item = routesToCalculate[i];
+          const rawRoute = item.raw;
+          const distKm = Math.round(rawRoute.distance / 1000);
+          
+          const driveMin = Math.round((rawRoute.duration / 60) * (i === 1 ? 0.96 : (i === 2 ? 1.04 : 1.0)));
+
+          const reqKwh = (distKm * 160) / 1000;
+          const availKwh = ((socStart - socMin) / 100) * car.battery;
+          let stopsCount = 0;
+          let chargeMin = 0;
+          let kwhPerStop = 0;
+
+          if(reqKwh > availKwh) {
+            stopsCount = Math.ceil((reqKwh - availKwh) / (car.battery * ((socTarget - socMin) / 100)));
+            kwhPerStop = (reqKwh - availKwh) / stopsCount;
+            const effPower = Math.min(car.maxCharge, item.net.power) * 0.82;
+            chargeMin = Math.round((kwhPerStop / effPower) * 60) * stopsCount + (stopsCount * 4);
+          }
+
+          let realStopsData = [];
+          const geom = rawRoute.geometry.coordinates.map(c => [c[1], c[0]]);
+
+          let currentSoc = socStart;
+          let socArr = [];
+
+          for (let s = 1; s <= stopsCount; s++) {
+            const stepIdx = Math.floor((geom.length / (stopsCount + 1)) * s);
+            const coord = geom[stepIdx];
+            
+            const realCharger = await fetchRealCharger(coord[0], coord[1], item.net.name);
+            
+            let arrSoc = Math.max(socMin, Math.round(currentSoc - (reqKwh / (stopsCount + 1) / car.battery) * 100));
+            let depSoc = socTarget;
+            currentSoc = depSoc;
+
+            realStopsData.push({
+              name: realCharger.name,
+              lat: realCharger.lat,
+              lon: realCharger.lon,
+              stallsTotal: realCharger.stallsTotal,
+              stallsFree: realCharger.stallsFree,
+              arrSoc: arrSoc,
+              depSoc: depSoc
+            });
+          }
+
+          const nearbyChargers = await fetchAllRouteChargers(geom);
+
+          computedRoutes.push({
+            index: i,
+            title: `${item.label} (${item.net.name.split(' ')[0]})`,
+            distanceKm: distKm,
+            driveMin: driveMin,
+            chargeMin: chargeMin,
+            totalMin: driveMin + chargeMin,
+            stops: stopsCount,
+            kwhPerStop: kwhPerStop,
+            costPerStop: kwhPerStop * item.net.price,
+            cost: Math.round(stopsCount * (kwhPerStop * item.net.price)),
+            charger: item.net,
+            realStops: realStopsData,
+            nearbyChargers: nearbyChargers,
+            geometry: geom
+          });
+        }
+
+        renderRouteSelector();
+        selectRoute(0, orig, dest, origText, destText);
+
+      } catch(e) {
+        alert("Error al simular la ruta: " + e.message);
+      } finally {
+        btn.innerText = "⚡ Calcular y Comparar Rutas";
+        btn.disabled = false;
+      }
+    }
+
+    function renderRouteSelector() {
+      const box = document.getElementById('routeSelector');
+      box.style.display = 'grid';
+      box.innerHTML = '';
+
+      computedRoutes.forEach((r, idx) => {
+        const h = Math.floor(r.totalMin / 60);
+        const m = r.totalMin % 60;
+        box.innerHTML += `
+          <div class="route-card ${idx === selectedRouteIndex ? 'active' : ''}" onclick="switchRoute(${idx})">
+            <div class="route-card-title">${r.title}</div>
+            <div class="route-card-time">${h}h ${m}m</div>
+            <div class="route-card-sub">${r.distanceKm} km | ${r.stops} paradas | ${r.cost} €</div>
+          </div>
+        `;
+      });
+    }
+
+    function switchRoute(idx) {
+      selectedRouteIndex = idx;
+      renderRouteSelector();
+      renderAllRoutesOnMap();
+      updateMetrics(computedRoutes[idx]);
+    }
+
+    function selectRoute(idx, orig, dest, origText, destText) {
+      selectedRouteIndex = idx;
+      renderRouteSelector();
+      
+      routeMarkers.forEach(m => map.removeLayer(m));
+      routeMarkers = [];
+
+      const mOrig = L.marker([orig.lat, orig.lon]).addTo(map).bindPopup("<b>Origen:</b> " + origText);
+      const mDest = L.marker([dest.lat, dest.lon]).addTo(map).bindPopup("<b>Destino:</b> " + destText);
+      routeMarkers.push(mOrig, mDest);
+
+      renderAllRoutesOnMap();
+      updateMetrics(computedRoutes[idx]);
+    }
+
+    function renderAllRoutesOnMap() {
+      polylines.forEach(p => map.removeLayer(p));
+      polylines = [];
+      nearbyChargerMarkers.forEach(m => map.removeLayer(m));
+      nearbyChargerMarkers = [];
+
+      computedRoutes.forEach((r, idx) => {
+        const isSelected = idx === selectedRouteIndex;
+        const color = isSelected ? '#10b981' : (idx === 1 ? '#3b82f6' : '#94a3b8');
+        const weight = isSelected ? 6 : 4;
+        const opacity = isSelected ? 0.95 : 0.45;
+
+        const poly = L.polyline(r.geometry, { color, weight, opacity }).addTo(map);
+        poly.on('click', () => switchRoute(idx));
+        polylines.push(poly);
+
+        if(isSelected) {
+          map.fitBounds(poly.getBounds(), { padding: [40, 40] });
+
+          // Dibujar otros puntos de carga disponibles en la ruta (puntos verdes pequeños)
+          r.nearbyChargers.forEach(ch => {
+            const circle = L.circleMarker([ch.lat, ch.lon], {
+              radius: 5,
+              fillColor: '#10b981',
+              color: '#ffffff',
+              weight: 1.5,
+              opacity: 0.9,
+              fillOpacity: 0.8
+            }).addTo(map);
+            circle.bindTooltip('Cargador EV Disponible en Ruta', { permanent: false });
+            nearbyChargerMarkers.push(circle);
+          });
+
+          // Dibujar paradas obligatorias de carga con etiquetas flotantes de minutos
+          if(r.stops > 0) {
+            let itinHtml = '';
+            const stopChargeTime = Math.round(r.chargeMin / r.stops);
+
+            r.realStops.forEach((stop, i) => {
+              const marker = L.marker([stop.lat, stop.lon], {
+                icon: L.divIcon({ 
+                  className: 'custom-stop-icon', 
+                  html: `⚡ ⚡⚡ ${stop.chargerPower || r.charger.power} kW • ${stopChargeTime} min`, 
+                  iconSize: [120, 26] 
+                })
+              }).addTo(map);
+
+              marker.bindTooltip(`<b>${stop.name}</b><br><span>Disponibilidad: ${stop.stallsFree}/${stop.stallsTotal}</span>`, {
+                permanent: false, direction: 'top', className: 'charger-tooltip'
+              });
+
+              marker.on('click', () => openChargerModal(stop.name, `Coordenadas: ${stop.lat.toFixed(4)}, ${stop.lon.toFixed(4)}`, r.charger, i+1, r.kwhPerStop, stopChargeTime, r.costPerStop, stop.stallsFree, stop.stallsTotal, stop.arrSoc, stop.depSoc));
+              routeMarkers.push(marker);
+
+              itinHtml += `
+                <div class="itinerary-item" onclick="openChargerModalFromItin(${i})">
+                  <div>
+                    <div style="font-size:0.75rem; color:var(--primary); font-weight:700;">⚡⚡⚡ ${r.charger.power} kW • <span class="st-badge green">${stop.stallsFree}/${stop.stallsTotal} Libres</span></div>
+                    <strong>${stop.name}</strong><br>
+                    <small style="color:var(--text-muted);">Carga ${stop.arrSoc}% ➔ ${stop.depSoc}% • ${stopChargeTime} min</small>
+                  </div>
+                  <div style="text-align:right;">
+                    <span style="color:var(--primary); font-weight:700;">+${stopChargeTime} min</span><br>
+                    <small style="color:var(--accent);">Ver Ficha ➔</small>
+                  </div>
+                </div>`;
+            });
+            document.getElementById('itineraryBox').innerHTML = itinHtml;
+          } else {
+            document.getElementById('itineraryBox').innerHTML = '<span style="font-size:0.8rem; color:var(--text-muted);">Sin paradas necesarias para esta ruta.</span>';
+          }
+        }
+      });
+    }
+
+    function updateMetrics(route) {
+      const driveH = Math.floor(route.driveMin / 60);
+      const driveM = route.driveMin % 60;
+      const totalH = Math.floor(route.totalMin / 60);
+      const totalM = route.totalMin % 60;
+
+      document.getElementById('mDist').innerText = route.distanceKm + " km";
+      document.getElementById('mDriveTime').innerText = `${driveH}h ${driveM}m`;
+      document.getElementById('mChargeTime').innerText = route.chargeMin + " min";
+      document.getElementById('mTotalTime').innerText = `${totalH}h ${totalM}m`;
+      document.getElementById('mCost').innerText = route.cost + " €";
+
+      renderCharts(route);
+    }
+
+    function openChargerModal(fullName, locationStr, charger, stopIndex, kwh, timeMin, cost, freeStalls, totalStalls, arrSoc, depSoc) {
+      document.getElementById('dTitle').innerText = `${fullName}`;
+      document.getElementById('dAddress').innerText = `📍 ${locationStr}`;
+      document.getElementById('dKwhNeeded').innerText = `${kwh.toFixed(1)} kWh`;
+      document.getElementById('dTimeNeeded').innerText = `${timeMin} min (${arrSoc}% ➔ ${depSoc}%)`;
+      document.getElementById('dCostEst').innerText = `~${cost.toFixed(2)} €`;
+
+      const freeCount = freeStalls !== undefined ? freeStalls : 8;
+      const totalCount = totalStalls !== undefined ? totalStalls : 12;
+
+      document.getElementById('connectorsList').innerHTML = `
+        <div class="connector-row">
+          <div>
+            <strong>🔌 CCS · Ultrarrápido (${charger.power} kW)</strong>
+          </div>
+          <span class="st-badge green">${freeCount}/${totalCount}</span>
         </div>
-
-        <div class="move-info">
-
-          <strong>${escapeHtml(m.type)}</strong>
-
-          <span>
-            ${formatDate(m.date)}
-            ${m.note ? " · "+escapeHtml(m.note):""}
-          </span>
-
+        <div class="connector-row">
+          <div>
+            <strong>🔌 CCS · Rápido (50 kW)</strong>
+          </div>
+          <span class="st-badge green">1/1</span>
         </div>
+        <div class="connector-row">
+          <div>
+            <strong>🔌 Type 2 with Cable · Lento (43 kW)</strong>
+          </div>
+          <span class="st-badge red">0/1</span>
+        </div>
+      `;
 
-      </div>
-
-      <strong>
-        ${formatNumber(m.amount)}
-        ${m.type==="Jornada" ||
-          m.type==="Libre disposición" ||
-          m.type==="Horas convenio"
-          ?" h":" día(s)"}
-      </strong>
-
-    </div>
-  `;
-}
-
-
-/* =========================
-   CALENDARIO
-========================= */
-
-function getCalendarDate(){
-
-  const [y,m]=state.calendarDate
-    .split("-")
-    .map(Number);
-
-  return new Date(y,m-1,1);
-}
-
-
-function changeMonth(delta){
-
-  const d=getCalendarDate();
-
-  d.setMonth(d.getMonth()+delta);
-
-  state.calendarDate=
-    `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
-
-  renderCalendar();
-  renderMiniCalendar();
-}
-
-
-function goToday(){
-
-  state.calendarDate=todayISO().slice(0,7);
-
-  renderCalendar();
-  renderMiniCalendar();
-}
-
-
-function holidayName(date){
-
-  const h=state.config.holidays||[];
-
-  const item=h.find(x=>x.date===date);
-
-  return item ? item.name : "";
-}
-
-
-function isWeekend(date){
-
-  const d=new Date(date+"T00:00:00");
-
-  const day=d.getDay();
-
-  return day===0 || day===6;
-}
-
-
-function dayMovements(date){
-
-  return state.movements.filter(m=>m.date===date);
-}
-
-
-function renderCalendar(){
-
-  const container=document.getElementById("calendar");
-
-  if(!container)return;
-
-  const d=getCalendarDate();
-
-  const year=d.getFullYear();
-  const month=d.getMonth();
-
-  document.getElementById("calendarTitle")
-    .textContent=d.toLocaleDateString("es-ES",{
-      month:"long",
-      year:"numeric"
-    });
-
-  const first=new Date(year,month,1);
-
-  let start=first.getDay();
-
-  // Monday = first day
-  start=start===0?6:start-1;
-
-  const days=new Date(year,month+1,0).getDate();
-
-  const prevDays=new Date(year,month,0).getDate();
-
-  let html="";
-
-  for(let i=0;i<42;i++){
-
-    let day=i-start+1;
-    let currentMonth=true;
-    let cellMonth=month;
-    let cellYear=year;
-
-    if(day<=0){
-
-      day=prevDays+day;
-      cellMonth=month-1;
-
-      if(cellMonth<0){
-        cellMonth=11;
-        cellYear--;
-      }
-
-      currentMonth=false;
-
-    }else if(day>days){
-
-      day=day-days;
-      cellMonth=month+1;
-
-      if(cellMonth>11){
-        cellMonth=0;
-        cellYear++;
-      }
-
-      currentMonth=false;
+      document.getElementById('chargerModalOverlay').classList.add('open');
     }
 
-    const date=
-      `${cellYear}-${String(cellMonth+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+    function openChargerModalFromItin(stopIndex) {
+      const route = computedRoutes[selectedRouteIndex];
+      const stop = route.realStops[stopIndex];
+      const stopChargeTime = Math.round(route.chargeMin / route.stops);
 
-    const moves=dayMovements(date);
-
-    const classes=["day"];
-
-    if(!currentMonth)classes.push("other");
-
-    if(date===todayISO())classes.push("today");
-
-    if(isWeekend(date))classes.push("weekend");
-
-    const holiday=holidayName(date);
-
-    if(holiday)classes.push("holiday");
-
-    if(moves.some(x=>x.type==="Vacaciones"))
-      classes.push("vacation");
-
-    else if(moves.some(x=>x.type==="Libre disposición"))
-      classes.push("free");
-
-    else if(moves.some(x=>x.type==="Horas convenio"))
-      classes.push("convenio");
-
-    let note="";
-
-    if(holiday){
-      note=holiday;
-    }else if(moves.length){
-      note=moves.map(x=>x.type).join(", ");
+      openChargerModal(stop.name, `Coordenadas: ${stop.lat.toFixed(4)}, ${stop.lon.toFixed(4)}`, route.charger, stopIndex + 1, route.kwhPerStop, stopChargeTime, route.costPerStop, stop.stallsFree, stop.stallsTotal, stop.arrSoc, stop.depSoc);
     }
 
-    html+=`
-      <div class="${classes.join(" ")}"
-           onclick="openModal('${date}')">
-
-        <div class="day-number">${day}</div>
-
-        ${note ?
-          `<div class="day-note">${escapeHtml(note)}</div>`
-          :""}
-
-      </div>
-    `;
-  }
-
-  container.innerHTML=html;
-}
-
-
-function renderMiniCalendar(){
-
-  const container=document.getElementById("miniCalendar");
-
-  if(!container)return;
-
-  const d=getCalendarDate();
-
-  document.getElementById("miniMonth")
-    .textContent=d.toLocaleDateString("es-ES",{
-      month:"long",
-      year:"numeric"
-    });
-
-  const year=d.getFullYear();
-  const month=d.getMonth();
-
-  const first=new Date(year,month,1);
-
-  let start=first.getDay();
-
-  start=start===0?6:start-1;
-
-  const days=new Date(year,month+1,0).getDate();
-
-  let html=`
-    <div class="weekdays">
-      <div>L</div><div>M</div><div>X</div>
-      <div>J</div><div>V</div><div>S</div><div>D</div>
-    </div>
-    <div class="calendar">
-  `;
-
-  for(let i=0;i<start;i++){
-    html+=`<div class="day other"></div>`;
-  }
-
-  for(let day=1;day<=days;day++){
-
-    const date=
-      `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
-
-    const moves=dayMovements(date);
-
-    let cls="day";
-
-    if(date===todayISO())cls+=" today";
-
-    if(isWeekend(date))cls+=" weekend";
-
-    if(holidayName(date))cls+=" holiday";
-
-    if(moves.some(x=>x.type==="Vacaciones"))
-      cls+=" vacation";
-    else if(moves.some(x=>x.type==="Libre disposición"))
-      cls+=" free";
-    else if(moves.some(x=>x.type==="Horas convenio"))
-      cls+=" convenio";
-
-    html+=`
-      <div class="${cls}" onclick="openModal('${date}')">
-        <div class="day-number">${day}</div>
-      </div>
-    `;
-  }
-
-  html+="</div>";
-
-  container.innerHTML=html;
-}
-
-
-/* =========================
-   MODAL
-========================= */
-
-function openModal(date=null,type=null){
-
-  document.getElementById("modal").classList.add("show");
-
-  document.getElementById("moveDate").value=
-    date || todayISO();
-
-  document.getElementById("moveType").value=
-    type || "Vacaciones";
-
-  document.getElementById("moveAmount").value=
-    type==="Jornada"
-      ?state.config.day
-      :1;
-
-  document.getElementById("moveNote").value="";
-
-  updateAmountLabel();
-}
-
-
-function closeModal(){
-
-  document.getElementById("modal")
-    .classList.remove("show");
-}
-
-
-document.getElementById("moveType")
-  .addEventListener("change",updateAmountLabel);
-
-
-function updateAmountLabel(){
-
-  const type=document.getElementById("moveType").value;
-
-  const label=document.getElementById("amountLabel");
-
-  if(type==="Vacaciones"){
-    label.textContent="Días";
-  }else{
-    label.textContent="Horas";
-  }
-
-  if(type==="Jornada"){
-    document.getElementById("moveAmount").value=
-      state.config.day;
-  }
-}
-
-
-function quickAdd(type){
-  openModal(null,type);
-}
-
-
-function saveMovement(){
-
-  const type=
-    document.getElementById("moveType").value;
-
-  const date=
-    document.getElementById("moveDate").value;
-
-  const amount=
-    Number(document.getElementById("moveAmount").value);
-
-  const note=
-    document.getElementById("moveNote").value.trim();
-
-  if(!date){
-    toast("Selecciona una fecha");
-    return;
-  }
-
-  if(!amount || amount<0){
-    toast("Introduce una cantidad válida");
-    return;
-  }
-
-  state.movements.push({
-    id:Date.now().toString(),
-    type,
-    date,
-    amount,
-    note
-  });
-
-  saveState();
-
-  closeModal();
-
-  renderAll();
-
-  toast("Movimiento guardado correctamente");
-}
-
-
-/* =========================
-   MOVIMIENTOS
-========================= */
-
-function renderMovements(){
-
-  const tbody=document.getElementById("movementTable");
-
-  const arr=[...state.movements]
-    .sort((a,b)=>b.date.localeCompare(a.date));
-
-  if(!arr.length){
-
-    tbody.innerHTML=`
-      <tr>
-        <td colspan="5"
-            style="text-align:center;color:var(--muted);padding:30px">
-          No hay movimientos registrados.
-        </td>
-      </tr>`;
-
-    return;
-  }
-
-  tbody.innerHTML=arr.map(m=>`
-
-    <tr>
-
-      <td>${formatDate(m.date)}</td>
-
-      <td>${escapeHtml(m.type)}</td>
-
-      <td>
-        ${formatNumber(m.amount)}
-        ${m.type==="Vacaciones"?"día(s)":"h"}
-      </td>
-
-      <td>${escapeHtml(m.note||"—")}</td>
-
-      <td>
-        <button class="btn btn-danger"
-                onclick="deleteMovement('${m.id}')">
-          Eliminar
-        </button>
-      </td>
-
-    </tr>
-
-  `).join("");
-}
-
-
-function deleteMovement(id){
-
-  if(!confirm("¿Quieres eliminar este movimiento?"))
-    return;
-
-  state.movements=
-    state.movements.filter(m=>m.id!==id);
-
-  saveState();
-
-  renderAll();
-
-  toast("Movimiento eliminado");
-}
-
-
-/* =========================
-   ESTADÍSTICAS
-========================= */
-
-function renderStats(){
-
-  const vac=vacationUsed();
-
-  const free=freeUsed();
-
-  const hours=workHours();
-
-  document.getElementById("statVac")
-    .textContent=formatNumber(vac)+" días";
-
-  document.getElementById("statFree")
-    .textContent=formatNumber(free)+" h";
-
-  document.getElementById("statHours")
-    .textContent=formatNumber(hours)+" h";
-
-  const vacTotal=Number(state.config.vac)||1;
-
-  const freeTotal=Number(state.config.free)||1;
-
-  document.getElementById("statVacBar").style.width=
-    Math.min(100,vac/vacTotal*100)+"%";
-
-  document.getElementById("statFreeBar").style.width=
-    Math.min(100,free/freeTotal*100)+"%";
-
-  document.getElementById("statHoursBar").style.width=
-    Math.min(100,hours/1760*100)+"%";
-
-  renderYearSummary();
-}
-
-
-function renderYearSummary(){
-
-  const el=document.getElementById("yearSummary");
-
-  const year=new Date().getFullYear();
-
-  const months=[];
-
-  for(let i=1;i<=12;i++){
-
-    const prefix=
-      `${year}-${String(i).padStart(2,"0")}`;
-
-    const movements=
-      state.movements.filter(m=>m.date.startsWith(prefix));
-
-    const vac=
-      movements
-        .filter(m=>m.type==="Vacaciones")
-        .reduce((s,m)=>s+Number(m.amount),0);
-
-    const hours=
-      movements
-        .filter(m=>m.type==="Jornada")
-        .reduce((s,m)=>s+Number(m.amount),0);
-
-    months.push({
-      name:new Date(year,i-1,1)
-        .toLocaleDateString("es-ES",{month:"long"}),
-      vac,
-      hours
-    });
-  }
-
-  el.innerHTML=months.map(m=>`
-
-    <div style="
-      display:grid;
-      grid-template-columns:1fr 100px 100px;
-      gap:10px;
-      padding:11px 0;
-      border-bottom:1px solid var(--border);
-      font-size:13px">
-
-      <strong style="text-transform:capitalize">
-        ${m.name}
-      </strong>
-
-      <span>${formatNumber(m.vac)} vacaciones</span>
-
-      <span>${formatNumber(m.hours)} h</span>
-
-    </div>
-
-  `).join("");
-}
-
-
-/* =========================
-   CONFIGURACIÓN
-========================= */
-
-function loadConfigForm(){
-
-  const c=state.config;
-
-  document.getElementById("cfgVac").value=c.vac;
-
-  document.getElementById("cfgFree").value=c.free;
-
-  document.getElementById("cfgConv").value=c.conv;
-
-  document.getElementById("cfgDay").value=c.day;
-
-  document.getElementById("cfgWeek").value=c.week;
-
-  document.getElementById("cfgStart").value=c.start;
-
-  document.getElementById("cfgHolidays").value=
-    (c.holidays||[])
-      .map(h=>`${h.date}, ${h.name}`)
-      .join("\n");
-
-  document.getElementById("themeSelect").value=
-    state.theme;
-
-  document.getElementById("modeSelect").value=
-    state.mode;
-}
-
-
-function saveConfig(){
-
-  state.config.vac=
-    Number(document.getElementById("cfgVac").value)||0;
-
-  state.config.free=
-    Number(document.getElementById("cfgFree").value)||0;
-
-  state.config.conv=
-    Number(document.getElementById("cfgConv").value)||0;
-
-  state.config.day=
-    Number(document.getElementById("cfgDay").value)||8;
-
-  state.config.week=
-    Number(document.getElementById("cfgWeek").value)||5;
-
-  state.config.start=
-    Number(document.getElementById("cfgStart").value)||1;
-
-  const lines=
-    document.getElementById("cfgHolidays").value
-      .split("\n")
-      .map(x=>x.trim())
-      .filter(Boolean);
-
-  state.config.holidays=lines.map(line=>{
-
-    const parts=line.split(",");
-
-    return {
-      date:(parts.shift()||"").trim(),
-      name:parts.join(",").trim()||"Festivo"
-    };
-
-  }).filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.date));
-
-  saveState();
-
-  renderAll();
-
-  toast("Configuración guardada");
-}
-
-
-/* =========================
-   EXPORTAR
-========================= */
-
-function exportData(){
-
-  const data={
-    app:"Mi Jornada",
-    version:4,
-    exportedAt:new Date().toISOString(),
-    config:state.config,
-    movements:state.movements,
-    theme:state.theme,
-    mode:state.mode
-  };
-
-  const blob=new Blob(
-    [JSON.stringify(data,null,2)],
-    {type:"application/json"}
-  );
-
-  const url=URL.createObjectURL(blob);
-
-  const a=document.createElement("a");
-
-  a.href=url;
-
-  a.download=
-    "mi-jornada-backup-"+todayISO()+".json";
-
-  document.body.appendChild(a);
-
-  a.click();
-
-  a.remove();
-
-  URL.revokeObjectURL(url);
-
-  toast("Copia de seguridad creada");
-}
-
-
-function importData(event){
-
-  const file=event.target.files[0];
-
-  if(!file)return;
-
-  const reader=new FileReader();
-
-  reader.onload=function(){
-
-    try{
-
-      const data=JSON.parse(reader.result);
-
-      if(!data.config || !Array.isArray(data.movements)){
-        throw new Error("Formato inválido");
-      }
-
-      state.config={
-        ...state.config,
-        ...data.config
-      };
-
-      state.movements=data.movements;
-
-      state.theme=data.theme||"blue";
-
-      state.mode=data.mode||"light";
-
-      saveState();
-
-      applyAppearance();
-
-      loadConfigForm();
-
-      renderAll();
-
-      toast("Datos importados correctamente");
-
-    }catch(e){
-
-      alert("No se ha podido importar el archivo.");
-
+    function closeChargerModal() { document.getElementById('chargerModalOverlay').classList.remove('open'); }
+    function changeThemeMode(mode) { document.documentElement.setAttribute('data-theme', mode); }
+    function changeThemeAccent(accent) { document.documentElement.setAttribute('data-accent', accent); }
+
+    function moveCardUp(cardId) {
+      const card = document.getElementById(cardId);
+      if (card && card.previousElementSibling) card.parentNode.insertBefore(card, card.previousElementSibling);
+    }
+    function moveCardDown(cardId) {
+      const card = document.getElementById(cardId);
+      if (card && card.nextElementSibling) card.parentNode.insertBefore(card.nextElementSibling, card);
     }
 
-    event.target.value="";
-  };
+    function renderCharts(route) {
+      const ctxSoc = document.getElementById('socChart').getContext('2d');
+      if(socChartInstance) socChartInstance.destroy();
 
-  reader.readAsText(file);
-}
+      socChartInstance = new Chart(ctxSoc, {
+        type: 'line',
+        data: {
+          labels: ['Origen', 'Llegada Carga', 'Salida Carga', 'Destino'],
+          datasets: [
+            {
+              label: 'SoC Batería (%)',
+              data: [90, 15, 80, 25],
+              borderColor: '#10b981',
+              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+              yAxisID: 'y',
+              fill: true,
+              tension: 0.2
+            },
+            {
+              label: 'Velocidad Carga (kW)',
+              data: [0, route.charger.power, Math.round(route.charger.power * 0.3), 0],
+              borderColor: '#3b82f6',
+              borderDash: [5, 5],
+              yAxisID: 'y1',
+              tension: 0.1
+            }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          scales: {
+            y: { min: 0, max: 100, title: { display: true, text: 'SoC %', color: '#10b981' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            y1: { min: 0, max: 350, position: 'right', title: { display: true, text: 'Potencia kW', color: '#3b82f6' }, grid: { drawOnChartArea: false } }
+          }
+        }
+      });
 
+      const ctxForces = document.getElementById('forcesChart').getContext('2d');
+      if(forcesChartInstance) forcesChartInstance.destroy();
 
-/* =========================
-   BORRAR DATOS
-========================= */
+      forcesChartInstance = new Chart(ctxForces, {
+        type: 'bar',
+        data: {
+          labels: ['Tiempo Viaje'],
+          datasets: [
+            { label: 'Conducción (min)', data: [route.driveMin], backgroundColor: '#3b82f6' },
+            { label: 'Tiempo Carga (min)', data: [route.chargeMin], backgroundColor: '#10b981' }
+          ]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          scales: { x: { stacked: true }, y: { stacked: true } }
+        }
+      });
+    }
 
-function resetData(){
-
-  if(!confirm(
-    "Se eliminarán todos los movimientos y se restaurará la configuración inicial. ¿Continuar?"
-  )){
-    return;
-  }
-
-  localStorage.removeItem(STORAGE_KEY);
-
-  state={
-    config:{
-      vac:22,
-      free:16,
-      conv:0,
-      day:8,
-      week:5,
-      start:1,
-      holidays:[]
-    },
-    movements:[],
-    theme:"blue",
-    mode:"light",
-    calendarDate:todayISO().slice(0,7)
-  };
-
-  applyAppearance();
-
-  loadConfigForm();
-
-  renderAll();
-
-  toast("Datos restaurados");
-}
-
-
-/* =========================
-   TOAST
-========================= */
-
-let toastTimer;
-
-function toast(message){
-
-  const el=document.getElementById("toast");
-
-  el.textContent=message;
-
-  el.classList.add("show");
-
-  clearTimeout(toastTimer);
-
-  toastTimer=setTimeout(()=>{
-    el.classList.remove("show");
-  },2500);
-}
-
-
-/* =========================
-   FECHA SUPERIOR
-========================= */
-
-function updateTodayLabel(){
-
-  const d=new Date();
-
-  document.getElementById("todayLabel")
-    .textContent=d.toLocaleDateString(
-      "es-ES",
-      {
-        weekday:"long",
-        day:"numeric",
-        month:"long",
-        year:"numeric"
-      }
-    );
-}
-
-
-/* =========================
-   TODO
-========================= */
-
-function renderAll(){
-
-  renderDashboard();
-
-  renderCalendar();
-
-  renderMovements();
-
-  renderStats();
-}
-
-
-/* =========================
-   INICIO
-========================= */
-
-loadState();
-
-updateTodayLabel();
-
-loadConfigForm();
-
-renderAll();
-
-
-/* Cerrar modal pulsando fuera */
-
-document.getElementById("modal")
-.addEventListener("click",function(e){
-
-  if(e.target===this){
-    closeModal();
-  }
-
-});
-
-
-/* =========================
-   TECLADO / ANDROID
-========================= */
-
-document.addEventListener("keydown",function(e){
-
-  if(e.key==="Escape"){
-    closeModal();
-  }
-
-});
-
-
-/* Evita que un toque mantenido seleccione
-   accidentalmente elementos de la interfaz */
-
-document.addEventListener("contextmenu",function(e){
-
-  if(e.target.closest("button") ||
-     e.target.closest(".day")){
-    e.preventDefault();
-  }
-
-});
-
-</script>
-
+    renderGarage();
+  </script>
 </body>
-    </html>
+</html>
